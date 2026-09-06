@@ -1,0 +1,169 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --text: #1f2937;
+  --muted: #5f6b7a;
+  --accent: #1f4b8f;
+  --accent-dark: #17396d;
+  --border: #dbe2ea;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.container {
+  width: min(1050px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.site-header {
+  padding: 72px 0 58px;
+  color: white;
+  background: linear-gradient(135deg, #142a4a, #1f4b8f);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 4.4rem);
+  line-height: 1.05;
+}
+
+.subtitle {
+  max-width: 850px;
+  margin: 22px 0 0;
+  font-size: 1.1rem;
+  opacity: 0.94;
+}
+
+.name {
+  margin: 26px 0 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.nav-links {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.nav-links a {
+  flex: 0 0 auto;
+  color: var(--accent-dark);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+main {
+  padding-top: 34px;
+  padding-bottom: 52px;
+}
+
+.card {
+  margin: 0 0 24px;
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgba(21, 40, 71, 0.05);
+}
+
+h2 {
+  margin-top: 0;
+  color: #142a4a;
+}
+
+.category {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.placeholder {
+  padding: 14px 16px;
+  border-left: 4px solid #b7c3d4;
+  background: #f2f5f9;
+  color: var(--muted);
+}
+
+.link-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.button:hover {
+  background: var(--accent-dark);
+}
+
+.button.disabled {
+  cursor: default;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+footer {
+  padding: 28px 0;
+  color: #d8e2f0;
+  background: #142a4a;
+}
+
+footer p {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .site-header {
+    padding: 52px 0 42px;
+  }
+
+  .card {
+    padding: 22px;
+  }
+}
