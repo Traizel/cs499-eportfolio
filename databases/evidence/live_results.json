@@ -1,0 +1,97 @@
+{
+  "server_version": "8.0.16",
+  "driver": "4.18.1",
+  "fixture_records": 10000,
+  "fixture": "Generated data; not the AAC dataset",
+  "checks": [
+    "Same 100 candidate records and projection before and after indexing",
+    "Stable pages have no duplicates or omissions; last and empty pages verified",
+    "Contradictory validated filters return no candidates",
+    "Server aggregation returns exact counts with and without category filters",
+    "Inclusive age boundaries and documented overlap precedence verified"
+  ],
+  "indexes_before": [
+    {
+      "v": 2,
+      "key": {
+        "_id": 1
+      },
+      "name": "_id_"
+    }
+  ],
+  "indexes_after": [
+    {
+      "v": 2,
+      "key": {
+        "_id": 1
+      },
+      "name": "_id_"
+    },
+    {
+      "v": 2,
+      "key": {
+        "animal_type": 1,
+        "breed": 1,
+        "sex_upon_outcome": 1,
+        "age_upon_outcome_in_weeks": 1,
+        "_id": 1
+      },
+      "name": "rescue_filter_v1"
+    }
+  ],
+  "metrics": {
+    "before_unhinted": {
+      "nReturned": 100,
+      "totalDocsExamined": 10000,
+      "totalKeysExamined": 0,
+      "executionTimeMillis": 2,
+      "stages": [
+        "COLLSCAN",
+        "PROJECTION_SIMPLE",
+        "SORT"
+      ]
+    },
+    "natural_scan_control": {
+      "nReturned": 100,
+      "totalDocsExamined": 10000,
+      "totalKeysExamined": 0,
+      "executionTimeMillis": 2,
+      "stages": [
+        "COLLSCAN",
+        "PROJECTION_SIMPLE",
+        "SORT"
+      ]
+    },
+    "after_unhinted": {
+      "nReturned": 100,
+      "totalDocsExamined": 100,
+      "totalKeysExamined": 100,
+      "executionTimeMillis": 0,
+      "stages": [
+        "FETCH",
+        "IXSCAN",
+        "LIMIT",
+        "PROJECTION_SIMPLE",
+        "SORT_MERGE"
+      ]
+    },
+    "index_hint_control": {
+      "nReturned": 100,
+      "totalDocsExamined": 100,
+      "totalKeysExamined": 100,
+      "executionTimeMillis": 0,
+      "stages": [
+        "FETCH",
+        "IXSCAN",
+        "LIMIT",
+        "PROJECTION_SIMPLE",
+        "SORT_MERGE"
+      ]
+    }
+  },
+  "limitations": [
+    "Single selective synthetic workload; not a production benchmark",
+    "Explain bypasses plan cache; millisecond timings can round to zero",
+    "Indexes do not accelerate every sort; offset pagination slows with depth"
+  ]
+}

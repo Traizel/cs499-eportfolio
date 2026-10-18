@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Algorithms and Data Structures Enhanced Source | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
+<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Algorithms and Data Structures Enhanced Source</h1><p class="name">Tré Olson</p></div></header>
+<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
+<main id="main" class="container"><section class="card"><h2>Enhanced files</h2><p><a href="index.html">Category overview</a></p><ul><li><a href="enhanced/Thermostat.py">Thermostat.py</a></li><li><a href="enhanced/core.py">core.py</a></li><li><a href="enhanced/pi_adapter.py">pi_adapter.py</a></li></ul><details><summary>Thermostat.py</summary><p><a href="enhanced/Thermostat.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Run with --simulate (default) on a computer, or --hardware on the CS 350 Pi.&quot;&quot;&quot;
+import argparse
+from collections import Counter
+from datetime import datetime, timedelta
+import logging
+import math
+from queue import Queue, Empty, Full
+import time
+
+from core import Scheduler, Thermostat, Mode
+
+
+class VirtualClock:
+    def __init__(self):
+        self.now = 0.0
+
+    def __call__(self):
+        return self.now
+
+    def sleep(self, seconds):
+        self.now += seconds
+
+
+class Simulation:
+    def __init__(self, clock):
+        self.clock = clock
+        self.previous_lights = None
+
+    def read_temperature(self):
+        return 72 + 3 * math.sin(self.clock() / 5)
+
+    def display(self, first, second):
+        print(f&quot;{self.clock():6.1f}s LCD |{first}|{second}|&quot;)
+
+    def lights(self, mode, active, fault):
+        state = (mode, active, fault)
+        if state != self.previous_lights:
+            print(f&quot;{self.clock():6.1f}s LED mode={mode.value} active={active} fault={fault}&quot;)
+            self.previous_lights = state
+
+    def serial(self, line):
+        print(f&quot;{self.clock():6.1f}s UART {line.strip()}&quot;)
+
+    def close(self):
+        print(&quot;Simulation closed; indicators off.&quot;)
+
+
+class Application:
+    def __init__(self, device, clock=time.monotonic, sleep=time.sleep,
+                 wall_clock=datetime.now):
+        self.device = device
+        self.clock = clock
+        self.wall_clock = wall_clock
+        self.started = clock()
+        self.model = Thermostat()
+        self.commands = Queue(maxsize=32)
+        self.counts = Counter()
+        self.scheduler = Scheduler(clock, sleep)
+        for name, interval, callback, delay in (
+            (&quot;sensor&quot;, 1, self.sample, 0),
+            (&quot;commands&quot;, 0.1, self.process_commands, 0),
+            (&quot;display&quot;, 1, self.display, 0),
+            (&quot;lights&quot;, 0.25, self.lights, 0),
+            (&quot;serial&quot;, 30, self.serial, 30),
+        ):
+            def counted(fn=callback, task=name):
+                self.counts[task] += 1
+                fn()
+            self.scheduler.every(name, interval, counted, delay)
+
+    def enqueue(self, command):
+        if command not in (&quot;cycle&quot;, &quot;up&quot;, &quot;down&quot;):
+            raise ValueError(&quot;Unknown button command&quot;)
+        try:
+            self.commands.put_nowait(command)
+        except Full:
+            logging.warning(&quot;Button queue full; command dropped&quot;)
+
+    def process_commands(self):
+        # Bounded work per turn prevents button traffic starving other tasks.
+        for _ in range(32):
+            try:
+                command = self.commands.get_nowait()
+            except Empty:
+                break
+            if command == &quot;cycle&quot;:
+                self.model.cycle()
+            else:
+                self.model.adjust(1 if command == &quot;up&quot; else -1)
+        self.lights()  # Apply button changes without another sampling delay.
+
+    def sample(self):
+        try:
+            self.model.sample(self.device.read_temperature())
+        except (OSError, RuntimeError, ValueError):
+            self.model.sensor_fault()
+            logging.warning(&quot;Sensor unavailable or invalid; indicators disabled&quot;)
+        self.lights()
+
+    def display(self):
+        first = self.wall_clock().strftime(&quot;%b %d  %H:%M:%S&quot;)
+        if self.model.fault:
+            second = &quot;SENSOR ERROR&quot;
+        elif int((self.clock() - self.started) // 5) % 2 == 0:
+            second = f&quot;Temp: {self.model.filter.average:.1f} F&quot;
+        else:
+            second = f&quot;{self.model.mode.value} Set:{self.model.setpoint:g} F&quot;
+        self.device.display(first[:16].ljust(16), second[:16].ljust(16))
+
+    def lights(self):
+        self.device.lights(self.model.mode, self.model.active, self.model.fault)
+
+    def serial(self):
+        line = self.model.serial_line()
+        if line is not None:
+            self.device.serial(line)
+
+    def run(self, seconds):
+        try:
+            self.scheduler.run(seconds)
+        finally:
+            self.device.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(&quot;--simulate&quot;, action=&quot;store_true&quot;)
+    mode.add_argument(&quot;--hardware&quot;, action=&quot;store_true&quot;)
+    parser.add_argument(&quot;--seconds&quot;, type=float, default=None)
+    args = parser.parse_args()
+    logging.basicConfig(level=logging.WARNING)
+    if args.hardware:
+        from pi_adapter import RaspberryPi
+        device = RaspberryPi()
+        try:
+            app = Application(device)
+            device.bind_buttons(app.enqueue)
+            app.run(args.seconds if args.seconds is not None else 3600)
+        finally:
+            device.close()
+    else:
+        clock = VirtualClock()
+        device = Simulation(clock)
+        app = Application(device, clock, clock.sleep,
+                          lambda: datetime(2026, 9, 27, 12) + timedelta(seconds=clock()))
+        app.enqueue(&quot;cycle&quot;)  # Begin demonstration in heat mode.
+        app.scheduler.every(&quot;demo_mode&quot;, 20, lambda: app.enqueue(&quot;cycle&quot;), delay=20)
+        app.run(args.seconds if args.seconds is not None else 65)
+        print(&quot;Task counts:&quot;, dict(app.counts))
+
+
+if __name__ == &quot;__main__&quot;:
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(&quot;Stopped.&quot;)
+</code></pre></details><details><summary>core.py</summary><p><a href="enhanced/core.py">Download this file</a></p><pre><code>&quot;&quot;&quot;CS 499 enhancement of the CS 350 thermostat; no hardware dependencies.&quot;&quot;&quot;
+from collections import deque
+from dataclasses import dataclass, field
+from enum import Enum
+import heapq
+import itertools
+import math
+import time
+from typing import Callable
+
+
+def finite_number(value, low, high):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(&quot;Expected a numeric value&quot;)
+    if not math.isfinite(value) or not low &lt;= value &lt;= high:
+        raise ValueError(&quot;Value outside supported range&quot;)
+    return float(value)
+
+
+class MovingAverage:
+    &quot;&quot;&quot;Bounded O(w) storage, O(1) update and average lookup.&quot;&quot;&quot;
+    def __init__(self, window=5):
+        if type(window) is not int or not 1 &lt;= window &lt;= 1000:
+            raise ValueError(&quot;Window must be an integer from 1 to 1000&quot;)
+        self.samples = deque(maxlen=window)
+        self.total = 0.0
+
+    def add(self, value):
+        value = finite_number(value, -40, 185)  # AHT20 operating range in F
+        # Subtract before maxlen would automatically discard the oldest value.
+        if len(self.samples) == self.samples.maxlen:
+            self.total -= self.samples.popleft()
+        self.samples.append(value)
+        self.total += value
+        return self.average
+
+    @property
+    def average(self):
+        return self.total / len(self.samples) if self.samples else None
+
+    def clear(self):
+        self.samples.clear()
+        self.total = 0.0
+
+
+class Mode(Enum):
+    OFF = &quot;off&quot;
+    HEAT = &quot;heat&quot;
+    COOL = &quot;cool&quot;
+
+
+class Thermostat:
+    &quot;&quot;&quot;Single-owner state machine. GPIO callbacks must enqueue commands.&quot;&quot;&quot;
+    def __init__(self, setpoint=72, hysteresis=0.5, window=5):
+        self.setpoint = finite_number(setpoint, 50, 90)
+        self.hysteresis = finite_number(hysteresis, 0.1, 5)
+        self.filter = MovingAverage(window)
+        self.mode = Mode.OFF
+        self.active = False
+        self.fault = True  # No valid reading yet.
+
+    def sample(self, fahrenheit):
+        try:
+            self.filter.add(fahrenheit)
+        except ValueError:
+            self.sensor_fault()
+            raise
+        self.fault = False
+        self.evaluate()
+
+    def sensor_fault(self):
+        self.fault = True
+        self.active = False
+        self.filter.clear()  # Do not reuse pre-failure samples on recovery.
+
+    def cycle(self):
+        modes = (Mode.OFF, Mode.HEAT, Mode.COOL)
+        self.mode = modes[(modes.index(self.mode) + 1) % len(modes)]
+        self.active = False
+        self.evaluate()
+
+    def set_target(self, value):
+        self.setpoint = finite_number(value, 50, 90)
+        self.evaluate()
+
+    def adjust(self, delta):
+        delta = finite_number(delta, -1, 1)
+        self.set_target(max(50, min(90, self.setpoint + delta)))
+
+    def evaluate(self):
+        temp = self.filter.average
+        if self.fault or temp is None or self.mode is Mode.OFF:
+            self.active = False
+        elif self.mode is Mode.HEAT:
+            if temp &lt;= self.setpoint - self.hysteresis:
+                self.active = True
+            elif temp &gt;= self.setpoint + self.hysteresis:
+                self.active = False
+        elif self.mode is Mode.COOL:
+            if temp &gt;= self.setpoint + self.hysteresis:
+                self.active = True
+            elif temp &lt;= self.setpoint - self.hysteresis:
+                self.active = False
+
+    def serial_line(self):
+        if self.fault or self.filter.average is None:
+            return None  # Suppress invalid readings; LCD/log reports the fault.
+        temperature = finite_number(self.filter.average, -40, 185)
+        target = finite_number(self.setpoint, 50, 90)
+        return f&quot;{self.mode.value},{temperature:.1f},{target:g}\n&quot;
+
+
+@dataclass(order=True)
+class Event:
+    due: float
+    sequence: int
+    interval: float = field(compare=False)
+    callback: Callable[[], None] = field(compare=False)
+    name: str = field(compare=False)
+
+
+class Scheduler:
+    &quot;&quot;&quot;Cooperative min-heap scheduler; tasks are registered before run().
+
+    O(log k) insertion/removal, O(1) earliest-deadline lookup, O(k) space.
+    Fixed-rate deadlines skip missed periods instead of replaying a backlog.
+    Callback failure propagates so the application can clean up and stop.
+    &quot;&quot;&quot;
+    def __init__(self, clock=time.monotonic, sleep=time.sleep):
+        self.clock, self.sleep = clock, sleep
+        self.events = []
+        self.sequence = itertools.count()
+
+    def every(self, name, interval, callback, delay=0):
+        interval = finite_number(interval, 0.001, 86400)
+        delay = finite_number(delay, 0, 86400)
+        if not callable(callback):
+            raise ValueError(&quot;Task must be callable&quot;)
+        heapq.heappush(self.events, Event(self.clock() + delay,
+                       next(self.sequence), interval, callback, name))
+
+    def run(self, duration):
+        duration = finite_number(duration, 0, 86400)
+        end = self.clock() + duration
+        while self.events:
+            now = self.clock()
+            due = self.events[0].due
+            if now &gt;= end:
+                return
+            if due &gt;= end:
+                self.sleep(end - now)
+                continue
+            if due &gt; now:
+                self.sleep(due - now)
+                continue  # Recheck the clock; sleep may return early.
+            event = heapq.heappop(self.events)
+            event.callback()
+            now = self.clock()
+            periods = max(1, math.floor((now - event.due) / event.interval) + 1)
+            event.due += periods * event.interval
+            heapq.heappush(self.events, event)
+</code></pre></details><details><summary>pi_adapter.py</summary><p><a href="enhanced/pi_adapter.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Hardware adapter retaining the wiring and LED semantics of the original.
+
+Hardware imports occur only when explicitly running on a Raspberry Pi.
+Physical integration has not been tested in the development container.
+&quot;&quot;&quot;
+from contextlib import ExitStack
+from core import Mode
+
+
+class RaspberryPi:
+    def __init__(self):
+        import board
+        import digitalio
+        import adafruit_ahtx0
+        import adafruit_character_lcd.character_lcd as characterlcd
+        import serial
+        from gpiozero import Button, PWMLED
+
+        self.resources = ExitStack()
+        self.previous_lights = None
+        try:
+            i2c = board.I2C()
+            self.resources.callback(i2c.deinit)
+            self.sensor = adafruit_ahtx0.AHTx0(i2c)
+            self.uart = serial.Serial(&#x27;/dev/ttyS0&#x27;, 115200, timeout=1, write_timeout=1)
+            self.resources.callback(self.uart.close)
+            self.red, self.blue = PWMLED(18), None
+            self.resources.callback(self.red.close)
+            self.blue = PWMLED(23)
+            self.resources.callback(self.blue.close)
+            pins = []
+            for pin in (board.D17, board.D27, board.D5, board.D6, board.D13, board.D26):
+                handle = digitalio.DigitalInOut(pin)
+                pins.append(handle)
+                self.resources.callback(handle.deinit)
+            self.lcd = characterlcd.Character_LCD_Mono(*pins, 16, 2)
+            self.resources.callback(self.lcd.clear)
+            self.lcd.clear()
+            self.buttons = []
+            for pin in (24, 25, 12):
+                button = Button(pin, bounce_time=0.05)
+                self.resources.callback(button.close)
+                self.buttons.append(button)
+        except BaseException:
+            self.resources.close()
+            raise
+
+    def bind_buttons(self, enqueue):
+        for button, command in zip(self.buttons, (&quot;cycle&quot;, &quot;up&quot;, &quot;down&quot;)):
+            button.when_pressed = lambda cmd=command: enqueue(cmd)
+
+    def read_temperature(self):
+        return self.sensor.temperature * 9 / 5 + 32
+
+    def display(self, first, second):
+        self.lcd.cursor_position(0, 0)
+        self.lcd.message = first + &quot;\n&quot; + second
+
+    def lights(self, mode, active, fault):
+        state = (mode, active, fault)
+        if state == self.previous_lights:
+            return  # Do not restart the PWM pulse at each scheduler tick.
+        self.red.off()
+        self.blue.off()
+        if not fault and mode is not Mode.OFF:
+            led = self.red if mode is Mode.HEAT else self.blue
+            led.pulse() if active else led.on()
+        self.previous_lights = state
+
+    def serial(self, line):
+        data = line.encode(&quot;ascii&quot;)
+        if self.uart.write(data) != len(data):
+            raise OSError(&quot;Incomplete UART write&quot;)
+
+    def close(self):
+        # ExitStack is idempotent and also releases partially opened hardware.
+        self.resources.close()
+</code></pre></details></section></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>

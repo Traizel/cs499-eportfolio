@@ -1,0 +1,76 @@
+   0.0s LED mode=off active=False fault=False
+   0.0s LED mode=heat active=False fault=False
+   0.0s LCD |Sep 27  12:00:00|Temp: 72.0 F    |
+   1.0s LCD |Sep 27  12:00:01|Temp: 72.3 F    |
+   2.0s LCD |Sep 27  12:00:02|Temp: 72.6 F    |
+   3.0s LCD |Sep 27  12:00:03|Temp: 72.9 F    |
+   4.0s LCD |Sep 27  12:00:04|Temp: 73.1 F    |
+   5.0s LCD |Sep 27  12:00:05|heat Set:72 F   |
+   6.0s LCD |Sep 27  12:00:06|heat Set:72 F   |
+   7.0s LCD |Sep 27  12:00:07|heat Set:72 F   |
+   8.0s LCD |Sep 27  12:00:08|heat Set:72 F   |
+   9.0s LCD |Sep 27  12:00:09|heat Set:72 F   |
+  10.0s LCD |Sep 27  12:00:10|Temp: 74.9 F    |
+  11.0s LCD |Sep 27  12:00:11|Temp: 74.8 F    |
+  12.0s LCD |Sep 27  12:00:12|Temp: 74.6 F    |
+  13.0s LCD |Sep 27  12:00:13|Temp: 74.3 F    |
+  14.0s LCD |Sep 27  12:00:14|Temp: 73.9 F    |
+  15.0s LCD |Sep 27  12:00:15|heat Set:72 F   |
+  16.0s LCD |Sep 27  12:00:16|heat Set:72 F   |
+  17.0s LCD |Sep 27  12:00:17|heat Set:72 F   |
+  18.0s LCD |Sep 27  12:00:18|heat Set:72 F   |
+  19.0s LED mode=heat active=True fault=False
+  19.0s LCD |Sep 27  12:00:19|heat Set:72 F   |
+  20.0s LCD |Sep 27  12:00:20|Temp: 70.7 F    |
+  20.0s LED mode=cool active=False fault=False
+  21.0s LCD |Sep 27  12:00:21|Temp: 70.2 F    |
+  22.0s LCD |Sep 27  12:00:22|Temp: 69.8 F    |
+  23.0s LCD |Sep 27  12:00:23|Temp: 69.5 F    |
+  24.0s LCD |Sep 27  12:00:24|Temp: 69.3 F    |
+  25.0s LCD |Sep 27  12:00:25|cool Set:72 F   |
+  26.0s LCD |Sep 27  12:00:26|cool Set:72 F   |
+  27.0s LCD |Sep 27  12:00:27|cool Set:72 F   |
+  28.0s LCD |Sep 27  12:00:28|cool Set:72 F   |
+  29.0s LCD |Sep 27  12:00:29|cool Set:72 F   |
+  30.0s LCD |Sep 27  12:00:30|Temp: 70.2 F    |
+  30.0s UART cool,70.2,72
+  31.0s LCD |Sep 27  12:00:31|Temp: 70.7 F    |
+  32.0s LCD |Sep 27  12:00:32|Temp: 71.2 F    |
+  33.0s LCD |Sep 27  12:00:33|Temp: 71.8 F    |
+  34.0s LCD |Sep 27  12:00:34|Temp: 72.3 F    |
+  35.0s LED mode=cool active=True fault=False
+  35.0s LCD |Sep 27  12:00:35|cool Set:72 F   |
+  36.0s LCD |Sep 27  12:00:36|cool Set:72 F   |
+  37.0s LCD |Sep 27  12:00:37|cool Set:72 F   |
+  38.0s LCD |Sep 27  12:00:38|cool Set:72 F   |
+  39.0s LCD |Sep 27  12:00:39|cool Set:72 F   |
+  40.0s LCD |Sep 27  12:00:40|Temp: 74.8 F    |
+  40.0s LED mode=off active=False fault=False
+  41.0s LCD |Sep 27  12:00:41|Temp: 74.9 F    |
+  42.0s LCD |Sep 27  12:00:42|Temp: 74.9 F    |
+  43.0s LCD |Sep 27  12:00:43|Temp: 74.7 F    |
+  44.0s LCD |Sep 27  12:00:44|Temp: 74.5 F    |
+  45.0s LCD |Sep 27  12:00:45|off Set:72 F    |
+  46.0s LCD |Sep 27  12:00:46|off Set:72 F    |
+  47.0s LCD |Sep 27  12:00:47|off Set:72 F    |
+  48.0s LCD |Sep 27  12:00:48|off Set:72 F    |
+  49.0s LCD |Sep 27  12:00:49|off Set:72 F    |
+  50.0s LCD |Sep 27  12:00:50|Temp: 71.5 F    |
+  51.0s LCD |Sep 27  12:00:51|Temp: 70.9 F    |
+  52.0s LCD |Sep 27  12:00:52|Temp: 70.4 F    |
+  53.0s LCD |Sep 27  12:00:53|Temp: 70.0 F    |
+  54.0s LCD |Sep 27  12:00:54|Temp: 69.6 F    |
+  55.0s LCD |Sep 27  12:00:55|off Set:72 F    |
+  56.0s LCD |Sep 27  12:00:56|off Set:72 F    |
+  57.0s LCD |Sep 27  12:00:57|off Set:72 F    |
+  58.0s LCD |Sep 27  12:00:58|off Set:72 F    |
+  59.0s LCD |Sep 27  12:00:59|off Set:72 F    |
+  60.0s LCD |Sep 27  12:01:00|Temp: 69.6 F    |
+  60.0s UART off,69.6,72
+  60.0s LED mode=heat active=True fault=False
+  61.0s LCD |Sep 27  12:01:01|Temp: 70.0 F    |
+  62.0s LCD |Sep 27  12:01:02|Temp: 70.5 F    |
+  63.0s LCD |Sep 27  12:01:03|Temp: 71.0 F    |
+  64.0s LCD |Sep 27  12:01:04|Temp: 71.5 F    |
+Simulation closed; indicators off.
+Task counts: {'sensor': 65, 'commands': 650, 'display': 65, 'lights': 260, 'serial': 2}

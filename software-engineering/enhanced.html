@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Software Engineering and Design Enhanced Source | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
+<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Software Engineering and Design Enhanced Source</h1><p class="name">Tré Olson</p></div></header>
+<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
+<main id="main" class="container"><section class="card"><h2>Enhanced files</h2><p><a href="index.html">Category overview</a></p><ul><li><a href="enhanced/animal_shelter/__init__.py">animal_shelter/__init__.py</a></li><li><a href="enhanced/animal_shelter/config.py">animal_shelter/config.py</a></li><li><a href="enhanced/animal_shelter/errors.py">animal_shelter/errors.py</a></li><li><a href="enhanced/animal_shelter/memory_repository.py">animal_shelter/memory_repository.py</a></li><li><a href="enhanced/animal_shelter/models.py">animal_shelter/models.py</a></li><li><a href="enhanced/animal_shelter/mongo_repository.py">animal_shelter/mongo_repository.py</a></li><li><a href="enhanced/animal_shelter/repository.py">animal_shelter/repository.py</a></li><li><a href="enhanced/animal_shelter/service.py">animal_shelter/service.py</a></li><li><a href="enhanced/animal_shelter/validation.py">animal_shelter/validation.py</a></li><li><a href="enhanced/demo.py">demo.py</a></li><li><a href="enhanced/live_read.py">live_read.py</a></li><li><a href="enhanced/requirements.txt">requirements.txt</a></li><li><a href="enhanced/tests/test_config.py">tests/test_config.py</a></li><li><a href="enhanced/tests/test_mongo_repository.py">tests/test_mongo_repository.py</a></li><li><a href="enhanced/tests/test_service.py">tests/test_service.py</a></li></ul><details><summary>animal_shelter/__init__.py</summary><p><a href="enhanced/animal_shelter/__init__.py">Download this file</a></p><pre><code>&quot;&quot;&quot;CS 499 software design enhancement for the CS 340 animal shelter artifact.&quot;&quot;&quot;
+from .service import AnimalService
+from .errors import ShelterError, ConfigurationError, ValidationError, RepositoryError, ResourceClosedError
+from .models import CreateResult, ReadResult, UpdateResult, DeleteResult
+
+__all__ = [&#x27;AnimalService&#x27;, &#x27;ShelterError&#x27;, &#x27;ConfigurationError&#x27;, &#x27;ValidationError&#x27;,
+           &#x27;RepositoryError&#x27;, &#x27;ResourceClosedError&#x27;, &#x27;CreateResult&#x27;, &#x27;ReadResult&#x27;,
+           &#x27;UpdateResult&#x27;, &#x27;DeleteResult&#x27;]
+</code></pre></details><details><summary>animal_shelter/config.py</summary><p><a href="enhanced/animal_shelter/config.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Environment configuration is isolated from domain and database operations.&quot;&quot;&quot;
+import os
+import re
+from dataclasses import dataclass, field
+from typing import Mapping
+from .errors import ConfigurationError
+
+@dataclass(frozen=True)
+class MongoConfig:
+    uri: str = field(repr=False)
+    database: str = &#x27;aac&#x27;
+    collection: str = &#x27;animals&#x27;
+    timeout_ms: int = 5000
+
+    def __post_init__(self) -&gt; None:
+        if not isinstance(self.uri, str) or not self.uri.startswith((&#x27;mongodb://&#x27;, &#x27;mongodb+srv://&#x27;)):
+            raise ConfigurationError(&#x27;Set MONGODB_URI to a valid MongoDB connection URI.&#x27;)
+        for name in (self.database, self.collection):
+            if not isinstance(name, str) or not re.fullmatch(r&#x27;[A-Za-z][A-Za-z0-9_-]{0,63}&#x27;, name):
+                raise ConfigurationError(&#x27;Database and collection names must use 1–64 safe characters.&#x27;)
+        if type(self.timeout_ms) is not int or not 100 &lt;= self.timeout_ms &lt;= 60000:
+            raise ConfigurationError(&#x27;Timeout must be an integer from 100 to 60000 milliseconds.&#x27;)
+
+    @classmethod
+    def from_env(cls, env: Mapping[str, str] | None = None) -&gt; &#x27;MongoConfig&#x27;:
+        source = os.environ if env is None else env
+        try:
+            timeout = int(source.get(&#x27;MONGODB_TIMEOUT_MS&#x27;, &#x27;5000&#x27;))
+        except (TypeError, ValueError):
+            raise ConfigurationError(&#x27;MONGODB_TIMEOUT_MS must be an integer.&#x27;) from None
+        return cls(source.get(&#x27;MONGODB_URI&#x27;, &#x27;&#x27;), source.get(&#x27;MONGODB_DATABASE&#x27;, &#x27;aac&#x27;),
+                   source.get(&#x27;MONGODB_COLLECTION&#x27;, &#x27;animals&#x27;), timeout)
+</code></pre></details><details><summary>animal_shelter/errors.py</summary><p><a href="enhanced/animal_shelter/errors.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Stable, application-facing errors; messages never include driver details.&quot;&quot;&quot;
+
+class ShelterError(Exception):
+    &quot;&quot;&quot;Base exception callers may handle at the application boundary.&quot;&quot;&quot;
+
+class ConfigurationError(ShelterError):
+    &quot;&quot;&quot;Missing or invalid connection configuration.&quot;&quot;&quot;
+
+class ValidationError(ShelterError):
+    &quot;&quot;&quot;Input violates the service contract.&quot;&quot;&quot;
+
+class RepositoryError(ShelterError):
+    &quot;&quot;&quot;A database operation failed; this is not an empty result.&quot;&quot;&quot;
+
+class ResourceClosedError(ShelterError):
+    &quot;&quot;&quot;An operation was attempted after the service or repository closed.&quot;&quot;&quot;
+</code></pre></details><details><summary>animal_shelter/memory_repository.py</summary><p><a href="enhanced/animal_shelter/memory_repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Offline demo/test adapter. Not persistent and not a MongoDB emulator.&quot;&quot;&quot;
+from copy import deepcopy
+from bson import ObjectId
+from .errors import ResourceClosedError
+from .models import Document, CreateResult, ReadResult, UpdateResult, DeleteResult
+
+class MemoryAnimalRepository:
+    def __init__(self) -&gt; None:
+        self._records: dict[ObjectId, Document] = {}
+        self._closed = False
+
+    def _ensure_open(self) -&gt; None:
+        if self._closed:
+            raise ResourceClosedError(&#x27;Memory repository is closed.&#x27;)
+
+    def create(self, data: Document) -&gt; CreateResult:
+        self._ensure_open()
+        identity = ObjectId()
+        self._records[identity] = {**deepcopy(data), &#x27;_id&#x27;: identity}
+        return CreateResult(str(identity))
+
+    def read(self, filters: Document, limit: int) -&gt; ReadResult:
+        self._ensure_open()
+        records = []
+        for row in self._records.values():
+            if all(row.get(key) == value for key, value in filters.items()):
+                records.append(deepcopy(row))
+                if len(records) &gt; limit:
+                    break
+        return ReadResult(tuple(records[:limit]), len(records) &gt; limit)
+
+    def update(self, record_id: ObjectId, changes: Document) -&gt; UpdateResult:
+        self._ensure_open()
+        record = self._records.get(record_id)
+        if record is None:
+            return UpdateResult(0, 0)
+        modified = any(record.get(key) != value for key, value in changes.items())
+        record.update(deepcopy(changes))
+        return UpdateResult(1, int(modified))
+
+    def delete(self, record_id: ObjectId) -&gt; DeleteResult:
+        self._ensure_open()
+        return DeleteResult(int(self._records.pop(record_id, None) is not None))
+
+    def close(self) -&gt; None:
+        self._closed = True
+</code></pre></details><details><summary>animal_shelter/models.py</summary><p><a href="enhanced/animal_shelter/models.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Explicit results preserve the difference between success, no match and failure.&quot;&quot;&quot;
+from dataclasses import dataclass
+from typing import Any
+
+Document = dict[str, Any]
+
+@dataclass(frozen=True)
+class CreateResult:
+    inserted_id: str
+
+@dataclass(frozen=True)
+class ReadResult:
+    records: tuple[Document, ...]
+    truncated: bool = False
+
+@dataclass(frozen=True)
+class UpdateResult:
+    matched_count: int
+    modified_count: int
+
+@dataclass(frozen=True)
+class DeleteResult:
+    deleted_count: int
+</code></pre></details><details><summary>animal_shelter/mongo_repository.py</summary><p><a href="enhanced/animal_shelter/mongo_repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;PyMongo adapter: driver errors stop here rather than becoming empty results.&quot;&quot;&quot;
+import logging
+from typing import Any, Callable, TypeVar
+from bson import ObjectId
+from pymongo import MongoClient
+from pymongo.errors import PyMongoError
+from .config import MongoConfig
+from .errors import ConfigurationError, RepositoryError, ResourceClosedError
+from .models import Document, CreateResult, ReadResult, UpdateResult, DeleteResult
+
+logger = logging.getLogger(__name__)
+T = TypeVar(&#x27;T&#x27;)
+
+class MongoAnimalRepository:
+    &quot;&quot;&quot;Internal adapter; application callers should use the validating service.&quot;&quot;&quot;
+    def __init__(self, client: Any, collection: Any, timeout_ms: int) -&gt; None:
+        self._client = client
+        self._collection = collection
+        self._timeout_ms = timeout_ms
+        self._closed = False
+
+    @classmethod
+    def connect(cls, config: MongoConfig, *, client_factory: Callable[..., Any] = MongoClient) -&gt; &#x27;MongoAnimalRepository&#x27;:
+        client = None
+        try:
+            client = client_factory(config.uri, serverSelectionTimeoutMS=config.timeout_ms,
+                connectTimeoutMS=config.timeout_ms, socketTimeoutMS=config.timeout_ms,
+                timeoutMS=config.timeout_ms, w=1)
+            client.admin.command(&#x27;ping&#x27;)
+            collection = client[config.database][config.collection]
+            return cls(client, collection, config.timeout_ms)
+        except (PyMongoError, ValueError, TypeError):
+            if client is not None:
+                client.close()
+            logger.error(&#x27;shelter_connection_failed&#x27;, extra={&#x27;operation&#x27;: &#x27;connect&#x27;, &#x27;status&#x27;: &#x27;failure&#x27;})
+            raise ConfigurationError(&#x27;MongoDB connection failed. Check configuration and availability.&#x27;) from None
+
+    def _run(self, operation: str, action: Callable[[], T]) -&gt; T:
+        if self._closed:
+            raise ResourceClosedError(&#x27;MongoDB repository is closed.&#x27;)
+        try:
+            return action()
+        except PyMongoError:
+            # Deliberately omit driver error text, query values and exception traces.
+            logger.error(&#x27;shelter_operation_failed&#x27;, extra={&#x27;operation&#x27;: operation, &#x27;status&#x27;: &#x27;failure&#x27;})
+            raise RepositoryError(f&#x27;MongoDB {operation} failed.&#x27;) from None
+
+    def create(self, data: Document) -&gt; CreateResult:
+        def action() -&gt; CreateResult:
+            result = self._collection.insert_one(dict(data))
+            if not result.acknowledged:
+                raise RepositoryError(&#x27;MongoDB create was not acknowledged.&#x27;)
+            return CreateResult(str(result.inserted_id))
+        return self._run(&#x27;create&#x27;, action)
+
+    def read(self, filters: Document, limit: int) -&gt; ReadResult:
+        def action() -&gt; ReadResult:
+            cursor = self._collection.find(dict(filters)).limit(limit + 1).max_time_ms(self._timeout_ms)
+            try:
+                records = list(cursor)
+            finally:
+                cursor.close()
+            return ReadResult(tuple(records[:limit]), len(records) &gt; limit)
+        return self._run(&#x27;read&#x27;, action)
+
+    def update(self, record_id: ObjectId, changes: Document) -&gt; UpdateResult:
+        def action() -&gt; UpdateResult:
+            result = self._collection.update_one({&#x27;_id&#x27;: record_id}, {&#x27;$set&#x27;: dict(changes)})
+            if not result.acknowledged:
+                raise RepositoryError(&#x27;MongoDB update was not acknowledged.&#x27;)
+            return UpdateResult(result.matched_count, result.modified_count)
+        return self._run(&#x27;update&#x27;, action)
+
+    def delete(self, record_id: ObjectId) -&gt; DeleteResult:
+        def action() -&gt; DeleteResult:
+            result = self._collection.delete_one({&#x27;_id&#x27;: record_id})
+            if not result.acknowledged:
+                raise RepositoryError(&#x27;MongoDB delete was not acknowledged.&#x27;)
+            return DeleteResult(result.deleted_count)
+        return self._run(&#x27;delete&#x27;, action)
+
+    def close(self) -&gt; None:
+        if not self._closed:
+            self._client.close()
+            self._closed = True
+</code></pre></details><details><summary>animal_shelter/repository.py</summary><p><a href="enhanced/animal_shelter/repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Repository contract; the service depends on this interface, not MongoClient.&quot;&quot;&quot;
+from typing import Protocol
+from bson import ObjectId
+from .models import Document, CreateResult, ReadResult, UpdateResult, DeleteResult
+
+class AnimalRepository(Protocol):
+    &quot;&quot;&quot;Inputs are validated by AnimalService. Implementations own their resources.&quot;&quot;&quot;
+    def create(self, data: Document) -&gt; CreateResult: ...
+    def read(self, filters: Document, limit: int) -&gt; ReadResult: ...
+    def update(self, record_id: ObjectId, changes: Document) -&gt; UpdateResult: ...
+    def delete(self, record_id: ObjectId) -&gt; DeleteResult: ...
+    def close(self) -&gt; None: ...
+</code></pre></details><details><summary>animal_shelter/service.py</summary><p><a href="enhanced/animal_shelter/service.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Application API with validation, typed results and explicit resource ownership.&quot;&quot;&quot;
+import logging
+from types import TracebackType
+from typing import Type
+from . import validation
+from .errors import ResourceClosedError
+from .models import CreateResult, ReadResult, UpdateResult, DeleteResult
+from .repository import AnimalRepository
+
+logger = logging.getLogger(__name__)
+
+class AnimalService:
+    &quot;&quot;&quot;Own the injected repository; use one service per repository lifecycle.&quot;&quot;&quot;
+    def __init__(self, repository: AnimalRepository) -&gt; None:
+        self._repository = repository
+        self._closed = False
+
+    def _ensure_open(self) -&gt; None:
+        if self._closed:
+            raise ResourceClosedError(&#x27;Animal service is closed.&#x27;)
+
+    def create(self, data: object) -&gt; CreateResult:
+        self._ensure_open()
+        result = self._repository.create(validation.document(data, mode=&#x27;create&#x27;))
+        logger.info(&#x27;shelter_operation&#x27;, extra={&#x27;operation&#x27;: &#x27;create&#x27;, &#x27;status&#x27;: &#x27;success&#x27;})
+        return result
+
+    def read(self, filters: object, *, limit: int = 100) -&gt; ReadResult:
+        self._ensure_open()
+        query = validation.document(filters, mode=&#x27;filter&#x27;)
+        count = validation.result_limit(limit)
+        result = self._repository.read(query, count)
+        logger.info(&#x27;shelter_operation&#x27;, extra={&#x27;operation&#x27;: &#x27;read&#x27;, &#x27;status&#x27;: &#x27;success&#x27;,
+                    &#x27;record_count&#x27;: len(result.records), &#x27;truncated&#x27;: result.truncated})
+        return result
+
+    def update(self, record_id: object, changes: object) -&gt; UpdateResult:
+        &quot;&quot;&quot;Update only the unique MongoDB _id, never an arbitrary bulk filter.&quot;&quot;&quot;
+        self._ensure_open()
+        identity = validation.object_id(record_id)
+        values = validation.document(changes, mode=&#x27;update&#x27;)
+        result = self._repository.update(identity, values)
+        logger.info(&#x27;shelter_operation&#x27;, extra={&#x27;operation&#x27;: &#x27;update&#x27;, &#x27;status&#x27;: &#x27;success&#x27;,
+                    &#x27;matched_count&#x27;: result.matched_count, &#x27;modified_count&#x27;: result.modified_count})
+        return result
+
+    def delete(self, record_id: object) -&gt; DeleteResult:
+        self._ensure_open()
+        result = self._repository.delete(validation.object_id(record_id))
+        logger.info(&#x27;shelter_operation&#x27;, extra={&#x27;operation&#x27;: &#x27;delete&#x27;, &#x27;status&#x27;: &#x27;success&#x27;,
+                    &#x27;deleted_count&#x27;: result.deleted_count})
+        return result
+
+    def close(self) -&gt; None:
+        if not self._closed:
+            self._repository.close()
+            self._closed = True
+
+    def __enter__(self) -&gt; &#x27;AnimalService&#x27;:
+        self._ensure_open()
+        return self
+
+    def __exit__(self, exc_type: Type[BaseException] | None, exc: BaseException | None,
+                 traceback: TracebackType | None) -&gt; None:
+        self.close()
+</code></pre></details><details><summary>animal_shelter/validation.py</summary><p><a href="enhanced/animal_shelter/validation.py">Download this file</a></p><pre><code>&quot;&quot;&quot;A deliberately narrow, equality-only AAC service boundary.
+
+Supported fields can be extended here with explicit types. Raw MongoDB operators,
+arrays and nested documents are never accepted through the public service API.
+&quot;&quot;&quot;
+import math
+from bson import ObjectId
+from .errors import ValidationError
+from .models import Document
+
+TEXT_FIELDS = frozenset({&#x27;animal_id&#x27;, &#x27;animal_type&#x27;, &#x27;breed&#x27;, &#x27;name&#x27;, &#x27;color&#x27;,
+    &#x27;sex_upon_outcome&#x27;, &#x27;outcome_type&#x27;, &#x27;outcome_subtype&#x27;, &#x27;date_of_birth&#x27;,
+    &#x27;datetime&#x27;, &#x27;monthyear&#x27;, &#x27;age_upon_outcome&#x27;})
+NUMBER_FIELDS = frozenset({&#x27;age_upon_outcome_in_weeks&#x27;, &#x27;location_lat&#x27;, &#x27;location_long&#x27;})
+REQUIRED_FIELDS = frozenset({&#x27;animal_id&#x27;, &#x27;animal_type&#x27;})
+MAX_TEXT_LENGTH = 256
+MAX_RESULTS = 1000
+
+
+def object_id(value: object) -&gt; ObjectId:
+    if isinstance(value, ObjectId):
+        return value
+    if isinstance(value, str) and ObjectId.is_valid(value):
+        return ObjectId(value)
+    raise ValidationError(&#x27;Record id must be a valid 24-character MongoDB ObjectId.&#x27;)
+
+
+def document(value: object, *, mode: str) -&gt; Document:
+    &quot;&quot;&quot;Return a new validated dictionary; never mutate caller-owned input.&quot;&quot;&quot;
+    if mode not in {&#x27;create&#x27;, &#x27;update&#x27;, &#x27;filter&#x27;}:
+        raise ValueError(&#x27;Unknown validation mode.&#x27;)
+    if not isinstance(value, dict) or (not value and mode != &#x27;filter&#x27;):
+        raise ValidationError(&#x27;Expected a nonempty dictionary (empty read filters are allowed).&#x27;)
+    allowed = TEXT_FIELDS | NUMBER_FIELDS | ({&#x27;_id&#x27;} if mode == &#x27;filter&#x27; else set())
+    result: Document = {}
+    for key, item in value.items():
+        if not isinstance(key, str) or key not in allowed:
+            raise ValidationError(&#x27;An unsupported field or query operator was provided.&#x27;)
+        if key == &#x27;_id&#x27;:
+            result[key] = object_id(item)
+        elif key in TEXT_FIELDS:
+            if not isinstance(item, str) or len(item) &gt; MAX_TEXT_LENGTH or &#x27;\x00&#x27; in item:
+                raise ValidationError(&#x27;Text fields must be strings of at most 256 characters without NUL.&#x27;)
+            if key in REQUIRED_FIELDS and not item.strip():
+                raise ValidationError(&#x27;Animal id and animal type cannot be blank.&#x27;)
+            result[key] = item
+        else:
+            # bool is a subclass of int, but not a valid measurement.
+            if type(item) not in (int, float):
+                raise ValidationError(&#x27;Measurement fields must be finite numbers.&#x27;)
+            try:
+                finite = math.isfinite(item)
+            except OverflowError:
+                finite = False
+            if not finite:
+                raise ValidationError(&#x27;Measurement fields must be finite numbers.&#x27;)
+            low, high = (0, 10000) if key == &#x27;age_upon_outcome_in_weeks&#x27; else ((-90, 90) if key == &#x27;location_lat&#x27; else (-180, 180))
+            if not low &lt;= item &lt;= high:
+                raise ValidationError(&#x27;Measurement is outside the supported range.&#x27;)
+            result[key] = item
+    if mode == &#x27;create&#x27; and not REQUIRED_FIELDS.issubset(result):
+        raise ValidationError(&#x27;Create requires animal_id and animal_type.&#x27;)
+    return result
+
+
+def result_limit(value: object) -&gt; int:
+    if type(value) is not int or not 1 &lt;= value &lt;= MAX_RESULTS:
+        raise ValidationError(&#x27;Read limit must be an integer from 1 to 1000.&#x27;)
+    return value
+</code></pre></details><details><summary>demo.py</summary><p><a href="enhanced/demo.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Run a deterministic offline workflow with synthetic animal records.&quot;&quot;&quot;
+from animal_shelter import AnimalService, ValidationError
+from animal_shelter.memory_repository import MemoryAnimalRepository
+
+
+def main() -&gt; None:
+    with AnimalService(MemoryAnimalRepository()) as shelter:
+        created = shelter.create({&#x27;animal_id&#x27;: &#x27;DEMO001&#x27;, &#x27;animal_type&#x27;: &#x27;Dog&#x27;, &#x27;name&#x27;: &#x27;Scout&#x27;})
+        print(&#x27;Created synthetic record:&#x27;, bool(created.inserted_id))
+        print(&#x27;Read matching records:&#x27;, len(shelter.read({&#x27;animal_type&#x27;: &#x27;Dog&#x27;}).records))
+        print(&#x27;Changed name:&#x27;, shelter.update(created.inserted_id, {&#x27;name&#x27;: &#x27;Scout II&#x27;}))
+        print(&#x27;Repeated same update:&#x27;, shelter.update(created.inserted_id, {&#x27;name&#x27;: &#x27;Scout II&#x27;}))
+        try:
+            shelter.read({&#x27;animal_type&#x27;: {&#x27;$ne&#x27;: None}})
+        except ValidationError:
+            print(&#x27;Rejected nested query operator: True&#x27;)
+        print(&#x27;Deleted record:&#x27;, shelter.delete(created.inserted_id))
+        print(&#x27;Read after deletion:&#x27;, len(shelter.read({}).records))
+    print(&#x27;Context manager closed the service.&#x27;)
+
+if __name__ == &#x27;__main__&#x27;:
+    main()
+</code></pre></details><details><summary>live_read.py</summary><p><a href="enhanced/live_read.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Optional read-only smoke check against the user&#x27;s configured MongoDB.&quot;&quot;&quot;
+from animal_shelter import AnimalService, ShelterError
+from animal_shelter.config import MongoConfig
+from animal_shelter.mongo_repository import MongoAnimalRepository
+
+
+def main() -&gt; int:
+    try:
+        with AnimalService(MongoAnimalRepository.connect(MongoConfig.from_env())) as shelter:
+            result = shelter.read({}, limit=5)
+            print(f&#x27;Connected. Returned {len(result.records)} records; truncated={result.truncated}.&#x27;)
+        return 0
+    except ShelterError as error:
+        print(f&#x27;Controlled error: {error}&#x27;)
+        return 1
+
+if __name__ == &#x27;__main__&#x27;:
+    raise SystemExit(main())
+</code></pre></details><details><summary>requirements.txt</summary><p><a href="enhanced/requirements.txt">Download this file</a></p><pre><code>pymongo==4.18.1
+dnspython==2.8.0
+</code></pre></details><details><summary>tests/test_config.py</summary><p><a href="enhanced/tests/test_config.py">Download this file</a></p><pre><code>import unittest
+from animal_shelter.config import MongoConfig
+from animal_shelter.errors import ConfigurationError
+
+class ConfigurationTests(unittest.TestCase):
+    def test_environment_loads_defaults_and_hides_uri_from_repr(self):
+        config = MongoConfig.from_env({&#x27;MONGODB_URI&#x27;: &#x27;mongodb://user:SECRET@localhost/&#x27;})
+        self.assertEqual(config.database, &#x27;aac&#x27;)
+        self.assertEqual(config.timeout_ms, 5000)
+        self.assertNotIn(&#x27;SECRET&#x27;, repr(config))
+
+    def test_custom_names_and_timeout(self):
+        config = MongoConfig.from_env({&#x27;MONGODB_URI&#x27;: &#x27;mongodb://localhost/&#x27;,
+             &#x27;MONGODB_DATABASE&#x27;: &#x27;aac_test&#x27;, &#x27;MONGODB_COLLECTION&#x27;: &#x27;animals_test&#x27;, &#x27;MONGODB_TIMEOUT_MS&#x27;: &#x27;1000&#x27;})
+        self.assertEqual((config.database, config.collection, config.timeout_ms), (&#x27;aac_test&#x27;, &#x27;animals_test&#x27;, 1000))
+
+    def test_missing_uri_wrong_scheme_and_invalid_timeout(self):
+        for env in ({}, {&#x27;MONGODB_URI&#x27;: &#x27;https://example.com&#x27;},
+                    {&#x27;MONGODB_URI&#x27;: &#x27;mongodb://localhost/&#x27;, &#x27;MONGODB_TIMEOUT_MS&#x27;: &#x27;bad&#x27;},
+                    {&#x27;MONGODB_URI&#x27;: &#x27;mongodb://localhost/&#x27;, &#x27;MONGODB_TIMEOUT_MS&#x27;: &#x27;0&#x27;}):
+            with self.subTest(env=env), self.assertRaises(ConfigurationError):
+                MongoConfig.from_env(env)
+
+    def test_direct_configuration_is_validated(self):
+        for kwargs in ({&#x27;database&#x27;: &#x27;bad.name&#x27;}, {&#x27;collection&#x27;: &#x27;$bad&#x27;}, {&#x27;timeout_ms&#x27;: True}, {&#x27;timeout_ms&#x27;: 60001}):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ConfigurationError):
+                MongoConfig(&#x27;mongodb://localhost/&#x27;, **kwargs)
+</code></pre></details><details><summary>tests/test_mongo_repository.py</summary><p><a href="enhanced/tests/test_mongo_repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Adapter contract tests use real PyMongo result/error types with mocked I/O.
+
+These tests do not claim to validate a live MongoDB server or credentials.
+&quot;&quot;&quot;
+import traceback
+import unittest
+from unittest.mock import MagicMock, Mock
+from bson import ObjectId
+from pymongo.errors import OperationFailure, ServerSelectionTimeoutError
+from pymongo.results import InsertOneResult, UpdateResult as MongoUpdateResult, DeleteResult as MongoDeleteResult
+from animal_shelter.config import MongoConfig
+from animal_shelter.errors import ConfigurationError, RepositoryError, ResourceClosedError
+from animal_shelter.models import UpdateResult, DeleteResult
+from animal_shelter.mongo_repository import MongoAnimalRepository
+
+class MongoAdapterTests(unittest.TestCase):
+    def setUp(self):
+        self.client = MagicMock()
+        self.collection = MagicMock()
+        self.repo = MongoAnimalRepository(self.client, self.collection, 1000)
+        self.addCleanup(self.repo.close)
+        self.identity = ObjectId()
+
+    def test_create_copies_input_and_returns_inserted_id(self):
+        data = {&#x27;animal_id&#x27;: &#x27;A&#x27;, &#x27;animal_type&#x27;: &#x27;Dog&#x27;}
+        def insert(copy):
+            copy[&#x27;_id&#x27;] = self.identity
+            return InsertOneResult(self.identity, True)
+        self.collection.insert_one.side_effect = insert
+        self.assertEqual(self.repo.create(data).inserted_id, str(self.identity))
+        self.assertNotIn(&#x27;_id&#x27;, data)
+
+    def test_update_uses_id_set_and_preserves_matched_vs_modified(self):
+        self.collection.update_one.return_value = MongoUpdateResult({&#x27;n&#x27;: 1, &#x27;nModified&#x27;: 0}, True)
+        self.assertEqual(self.repo.update(self.identity, {&#x27;name&#x27;: &#x27;Same&#x27;}), UpdateResult(1, 0))
+        self.collection.update_one.assert_called_once_with({&#x27;_id&#x27;: self.identity}, {&#x27;$set&#x27;: {&#x27;name&#x27;: &#x27;Same&#x27;}})
+        self.collection.update_many.assert_not_called()
+
+    def test_delete_uses_unique_id_and_one_operation(self):
+        self.collection.delete_one.return_value = MongoDeleteResult({&#x27;n&#x27;: 1}, True)
+        self.assertEqual(self.repo.delete(self.identity), DeleteResult(1))
+        self.collection.delete_one.assert_called_once_with({&#x27;_id&#x27;: self.identity})
+        self.collection.delete_many.assert_not_called()
+
+    def _cursor(self, documents):
+        cursor = MagicMock()
+        self.collection.find.return_value = cursor
+        cursor.limit.return_value = cursor
+        cursor.max_time_ms.return_value = cursor
+        cursor.__iter__.return_value = iter(documents)
+        return cursor
+
+    def test_read_caps_results_and_closes_cursor(self):
+        cursor = self._cursor([{&#x27;name&#x27;: &#x27;a&#x27;}, {&#x27;name&#x27;: &#x27;b&#x27;}, {&#x27;name&#x27;: &#x27;c&#x27;}])
+        result = self.repo.read({}, 2)
+        self.assertEqual(len(result.records), 2)
+        self.assertTrue(result.truncated)
+        cursor.limit.assert_called_once_with(3)
+        cursor.max_time_ms.assert_called_once_with(1000)
+        cursor.close.assert_called_once()
+
+    def test_cursor_failure_closes_cursor_and_raises_safe_error(self):
+        cursor = self._cursor([])
+        cursor.__iter__.side_effect = OperationFailure(&#x27;SECRET_DRIVER_TEXT&#x27;)
+        with self.assertLogs(&#x27;animal_shelter.mongo_repository&#x27;, level=&#x27;ERROR&#x27;) as logs:
+            with self.assertRaises(RepositoryError) as raised:
+                self.repo.read({}, 2)
+        cursor.close.assert_called_once()
+        self.assertNotIn(&#x27;SECRET_DRIVER_TEXT&#x27;, str(raised.exception))
+        self.assertNotIn(&#x27;SECRET_DRIVER_TEXT&#x27;, str(logs.records[0].__dict__))
+
+    def test_all_driver_operation_failures_are_translated(self):
+        calls = [(&#x27;create&#x27;, &#x27;insert_one&#x27;, ({&#x27;animal_id&#x27;: &#x27;A&#x27;},)),
+                 (&#x27;read&#x27;, &#x27;find&#x27;, ({}, 2)), (&#x27;update&#x27;, &#x27;update_one&#x27;, (self.identity, {&#x27;name&#x27;: &#x27;X&#x27;})),
+                 (&#x27;delete&#x27;, &#x27;delete_one&#x27;, (self.identity,))]
+        for operation, method, args in calls:
+            with self.subTest(operation=operation):
+                getattr(self.collection, method).side_effect = OperationFailure(&#x27;PASSWORD_SENTINEL&#x27;)
+                with self.assertLogs(&#x27;animal_shelter.mongo_repository&#x27;, level=&#x27;ERROR&#x27;) as logs:
+                    try:
+                        getattr(self.repo, operation)(*args)
+                    except RepositoryError as error:
+                        formatted = &#x27;&#x27;.join(traceback.format_exception(error))
+                        self.assertNotIn(&#x27;PASSWORD_SENTINEL&#x27;, formatted)
+                    else:
+                        self.fail(&#x27;Expected RepositoryError&#x27;)
+                self.assertEqual(logs.records[0].operation, operation)
+                self.assertNotIn(&#x27;PASSWORD_SENTINEL&#x27;, str(logs.records[0].__dict__))
+
+    def test_unacknowledged_writes_are_not_reported_as_success(self):
+        self.collection.insert_one.return_value = InsertOneResult(self.identity, False)
+        self.collection.update_one.return_value = MongoUpdateResult({}, False)
+        self.collection.delete_one.return_value = MongoDeleteResult({}, False)
+        for action in (lambda: self.repo.create({}), lambda: self.repo.update(self.identity, {}), lambda: self.repo.delete(self.identity)):
+            with self.assertRaises(RepositoryError):
+                action()
+
+    def test_connect_pings_and_sets_finite_timeouts_and_acknowledgement(self):
+        factory = Mock(return_value=self.client)
+        config = MongoConfig(&#x27;mongodb://localhost/&#x27;, timeout_ms=1000)
+        repo = MongoAnimalRepository.connect(config, client_factory=factory)
+        self.addCleanup(repo.close)
+        self.client.admin.command.assert_called_once_with(&#x27;ping&#x27;)
+        self.assertEqual(factory.call_args.kwargs, {&#x27;serverSelectionTimeoutMS&#x27;: 1000,
+            &#x27;connectTimeoutMS&#x27;: 1000, &#x27;socketTimeoutMS&#x27;: 1000, &#x27;timeoutMS&#x27;: 1000, &#x27;w&#x27;: 1})
+
+    def test_connect_failure_closes_partial_client_and_hides_secrets(self):
+        self.client.admin.command.side_effect = ServerSelectionTimeoutError(&#x27;URI_PASSWORD_SENTINEL&#x27;)
+        with self.assertLogs(&#x27;animal_shelter.mongo_repository&#x27;, level=&#x27;ERROR&#x27;) as logs:
+            with self.assertRaises(ConfigurationError) as raised:
+                MongoAnimalRepository.connect(MongoConfig(&#x27;mongodb://localhost/&#x27;), client_factory=Mock(return_value=self.client))
+        self.client.close.assert_called_once()
+        self.assertNotIn(&#x27;URI_PASSWORD_SENTINEL&#x27;, str(raised.exception))
+        self.assertNotIn(&#x27;URI_PASSWORD_SENTINEL&#x27;, str(logs.records[0].__dict__))
+
+    def test_malformed_uri_factory_error_becomes_configuration_error(self):
+        with self.assertLogs(&#x27;animal_shelter.mongo_repository&#x27;, level=&#x27;ERROR&#x27;):
+            with self.assertRaises(ConfigurationError):
+                MongoAnimalRepository.connect(MongoConfig(&#x27;mongodb://&#x27;), client_factory=Mock(side_effect=ValueError(&#x27;bad URI&#x27;)))
+
+    def test_close_is_idempotent_and_blocks_later_operations(self):
+        self.repo.close()
+        self.repo.close()
+        self.client.close.assert_called_once()
+        with self.assertRaises(ResourceClosedError):
+            self.repo.read({}, 1)
+</code></pre></details><details><summary>tests/test_service.py</summary><p><a href="enhanced/tests/test_service.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Behavior tests exercise real validation with an injected offline repository.&quot;&quot;&quot;
+import unittest
+from unittest.mock import Mock
+from bson import ObjectId
+from animal_shelter import AnimalService, ValidationError, ResourceClosedError, RepositoryError
+from animal_shelter.memory_repository import MemoryAnimalRepository
+from animal_shelter.models import UpdateResult, DeleteResult
+
+class ServiceTests(unittest.TestCase):
+    def setUp(self):
+        self.service = AnimalService(MemoryAnimalRepository())
+        self.addCleanup(self.service.close)
+        self.data = {&#x27;animal_id&#x27;: &#x27;TEST1&#x27;, &#x27;animal_type&#x27;: &#x27;Dog&#x27;, &#x27;name&#x27;: &#x27;Scout&#x27;}
+
+    def test_full_crud_workflow_preserves_other_records(self):
+        one = self.service.create(self.data)
+        two = self.service.create({**self.data, &#x27;animal_id&#x27;: &#x27;TEST2&#x27;})
+        self.assertEqual(self.service.update(one.inserted_id, {&#x27;name&#x27;: &#x27;New&#x27;}), UpdateResult(1, 1))
+        self.assertEqual(self.service.read({&#x27;_id&#x27;: one.inserted_id}).records[0][&#x27;name&#x27;], &#x27;New&#x27;)
+        self.assertEqual(self.service.read({&#x27;_id&#x27;: two.inserted_id}).records[0][&#x27;name&#x27;], &#x27;Scout&#x27;)
+        self.assertEqual(self.service.delete(one.inserted_id), DeleteResult(1))
+        self.assertEqual(len(self.service.read({}).records), 1)
+
+    def test_unchanged_update_is_distinct_from_missing_record(self):
+        created = self.service.create(self.data)
+        self.assertEqual(self.service.update(created.inserted_id, {&#x27;name&#x27;: &#x27;Scout&#x27;}), UpdateResult(1, 0))
+        self.assertEqual(self.service.update(ObjectId(), {&#x27;name&#x27;: &#x27;Scout&#x27;}), UpdateResult(0, 0))
+
+    def test_empty_result_is_success(self):
+        result = self.service.read({&#x27;animal_type&#x27;: &#x27;Cat&#x27;})
+        self.assertEqual(result.records, ())
+        self.assertFalse(result.truncated)
+        self.assertEqual(self.service.delete(ObjectId()), DeleteResult(0))
+
+    def test_limit_reports_truncation_without_hiding_it(self):
+        for _ in range(3):
+            self.service.create(self.data)
+        result = self.service.read({}, limit=2)
+        self.assertEqual(len(result.records), 2)
+        self.assertTrue(result.truncated)
+        self.assertFalse(self.service.read({}, limit=3).truncated)
+
+    def test_create_and_read_do_not_expose_mutable_stored_data(self):
+        created = self.service.create(self.data)
+        self.assertNotIn(&#x27;_id&#x27;, self.data)
+        self.data[&#x27;name&#x27;] = &#x27;Changed outside&#x27;
+        records = self.service.read({}).records
+        records[0][&#x27;name&#x27;] = &#x27;Changed result&#x27;
+        self.assertEqual(self.service.read({&#x27;_id&#x27;: created.inserted_id}).records[0][&#x27;name&#x27;], &#x27;Scout&#x27;)
+
+    def test_reject_missing_required_fields(self):
+        for data in ({}, None, [], {&#x27;animal_id&#x27;: &#x27;A&#x27;}, {&#x27;animal_type&#x27;: &#x27;Dog&#x27;}, {&#x27;animal_id&#x27;: &#x27; &#x27;, &#x27;animal_type&#x27;: &#x27;Dog&#x27;}):
+            with self.subTest(data=data), self.assertRaises(ValidationError):
+                self.service.create(data)
+
+    def test_operator_and_unknown_field_inputs_never_reach_repository(self):
+        repo = Mock()
+        service = AnimalService(repo)
+        for data in ({&#x27;$where&#x27;: &#x27;code&#x27;}, {&#x27;name&#x27;: {&#x27;$ne&#x27;: None}}, {&#x27;name.x&#x27;: &#x27;bad&#x27;}, {&#x27;unknown&#x27;: &#x27;bad&#x27;}, {1: &#x27;bad&#x27;}, {&#x27;name&#x27;: [&#x27;bad&#x27;]}):
+            with self.subTest(data=data), self.assertRaises(ValidationError):
+                service.read(data)
+        repo.read.assert_not_called()
+
+    def test_invalid_measurements_are_rejected(self):
+        for value in (True, &#x27;2&#x27;, float(&#x27;nan&#x27;), float(&#x27;inf&#x27;), -1, 10001, 10**1000):
+            with self.subTest(value=str(value)[:30]), self.assertRaises(ValidationError):
+                self.service.create({**self.data, &#x27;age_upon_outcome_in_weeks&#x27;: value})
+        for key,value in [(&#x27;location_lat&#x27;, 91), (&#x27;location_long&#x27;, -181)]:
+            with self.subTest(key=key), self.assertRaises(ValidationError):
+                self.service.create({**self.data, key: value})
+
+    def test_measurement_boundaries_and_optional_empty_name(self):
+        created = self.service.create({**self.data, &#x27;name&#x27;: &#x27;&#x27;, &#x27;age_upon_outcome_in_weeks&#x27;: 0,
+                                       &#x27;location_lat&#x27;: -90, &#x27;location_long&#x27;: 180})
+        self.assertTrue(created.inserted_id)
+
+    def test_reject_oversized_or_nul_text(self):
+        for name in (&#x27;x&#x27; * 257, &#x27;a\x00b&#x27;):
+            with self.subTest(name=name), self.assertRaises(ValidationError):
+                self.service.create({**self.data, &#x27;name&#x27;: name})
+
+    def test_invalid_limits_never_reach_repository(self):
+        for value in (0, -1, True, 1001, &#x27;10&#x27;, 1.5):
+            with self.subTest(value=value), self.assertRaises(ValidationError):
+                self.service.read({}, limit=value)
+
+    def test_mutations_reject_broad_filters_and_invalid_ids(self):
+        for identity in ({}, {&#x27;animal_type&#x27;: &#x27;Dog&#x27;}, &#x27;invalid&#x27;, None):
+            with self.subTest(identity=identity), self.assertRaises(ValidationError):
+                self.service.update(identity, {&#x27;name&#x27;: &#x27;bad&#x27;})
+            with self.subTest(identity=identity), self.assertRaises(ValidationError):
+                self.service.delete(identity)
+
+    def test_update_rejects_empty_changes_operators_and_id_mutation(self):
+        identity = ObjectId()
+        for changes in ({}, {&#x27;_id&#x27;: ObjectId()}, {&#x27;$set&#x27;: {&#x27;name&#x27;: &#x27;bad&#x27;}}, {&#x27;animal_type&#x27;: &#x27;&#x27;}):
+            with self.subTest(changes=changes), self.assertRaises(ValidationError):
+                self.service.update(identity, changes)
+
+    def test_context_manager_closes_repository_after_exception(self):
+        repo = Mock()
+        service = AnimalService(repo)
+        with self.assertRaisesRegex(RuntimeError, &#x27;body failed&#x27;):
+            with service:
+                raise RuntimeError(&#x27;body failed&#x27;)
+        service.close()
+        repo.close.assert_called_once()
+        with self.assertRaises(ResourceClosedError):
+            service.read({})
+
+    def test_repository_failure_is_not_an_empty_result(self):
+        repo = Mock()
+        repo.read.side_effect = RepositoryError(&#x27;Database unavailable&#x27;)
+        with self.assertRaises(RepositoryError):
+            AnimalService(repo).read({})
+
+    def test_logs_contain_metadata_but_not_record_values(self):
+        with self.assertLogs(&#x27;animal_shelter.service&#x27;, level=&#x27;INFO&#x27;) as captured:
+            self.service.create({**self.data, &#x27;name&#x27;: &#x27;PRIVATE_SENTINEL&#x27;})
+        record = captured.records[0]
+        self.assertEqual(record.operation, &#x27;create&#x27;)
+        self.assertEqual(record.status, &#x27;success&#x27;)
+        self.assertNotIn(&#x27;PRIVATE_SENTINEL&#x27;, str(record.__dict__))
+</code></pre></details></section></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>

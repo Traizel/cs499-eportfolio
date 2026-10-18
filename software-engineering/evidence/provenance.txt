@@ -1,0 +1,6 @@
+Baseline: supplied CS 340 CRUD_Python_Module(3).py
+Original preserved byte-for-byte.
+SHA-256: 77c33ea0b803ba36000a8bca46a4d8b5040a9f8d0e9d7287f18ce82da0ca9d19
+
+Verification: 3.12.14; PyMongo 4.18.1; dnspython 2.8.0
+31 offline tests passed; no live MongoDB connection tested.

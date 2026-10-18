@@ -1,0 +1,18 @@
+{
+  "verification_date": "2026-10-18",
+  "offline_tests": {
+    "software_engineering": 31,
+    "algorithms": 19,
+    "databases": 45
+  },
+  "database_suite_includes_earlier_31": true,
+  "local_html_pages": 15,
+  "local_links_checked": 271,
+  "broken_local_links": 0,
+  "source_files_preserved": 43,
+  "live_mongodb_repeated": false,
+  "raspberry_pi_tested": false,
+  "published_site_tested": false,
+  "browser_layout_tested": false,
+  "browser_layout_note": "Local browser was unavailable; deployed desktop/mobile layout should be checked after upload."
+}

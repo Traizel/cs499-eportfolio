@@ -1,0 +1,54 @@
+Verification date: 2026-10-18
+Python: 3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]
+Command: python -m unittest discover -s tests -v
+
+test_custom_names_and_timeout (test_config.ConfigurationTests.test_custom_names_and_timeout) ... ok
+test_direct_configuration_is_validated (test_config.ConfigurationTests.test_direct_configuration_is_validated) ... ok
+test_environment_loads_defaults_and_hides_uri_from_repr (test_config.ConfigurationTests.test_environment_loads_defaults_and_hides_uri_from_repr) ... ok
+test_missing_uri_wrong_scheme_and_invalid_timeout (test_config.ConfigurationTests.test_missing_uri_wrong_scheme_and_invalid_timeout) ... ok
+test_closed_service_prevents_database_search (test_database.AdapterTests.test_closed_service_prevents_database_search) ... ok
+test_empty_and_last_page (test_database.AdapterTests.test_empty_and_last_page) ... ok
+test_explain_uses_same_options_and_restricted_hint (test_database.AdapterTests.test_explain_uses_same_options_and_restricted_hint) ... ok
+test_failure_closes_cursor_and_hides_driver_details (test_database.AdapterTests.test_failure_closes_cursor_and_hides_driver_details) ... ok
+test_index_creation_and_inventory (test_database.AdapterTests.test_index_creation_and_inventory) ... ok
+test_invalid_input_never_calls_database (test_database.AdapterTests.test_invalid_input_never_calls_database) ... ok
+test_search_bounds_and_next_page (test_database.AdapterTests.test_search_bounds_and_next_page) ... ok
+test_summary_closes_cursor_and_sets_timeout (test_database.AdapterTests.test_summary_closes_cursor_and_sets_timeout) ... ok
+test_summary_failure_is_controlled (test_database.AdapterTests.test_summary_failure_is_controlled) ... ok
+test_copy_sort_projection_and_offset (test_database.PolicyTests.test_copy_sort_projection_and_offset) ... ok
+test_injection_rejected (test_database.PolicyTests.test_injection_rejected) ... ok
+test_invalid_options (test_database.PolicyTests.test_invalid_options) ... ok
+test_rescue_and_user_constraints_intersect (test_database.PolicyTests.test_rescue_and_user_constraints_intersect) ... ok
+test_summary_has_match_group_sort_limit (test_database.PolicyTests.test_summary_has_match_group_sort_limit) ... ok
+test_all_driver_operation_failures_are_translated (test_mongo_repository.MongoAdapterTests.test_all_driver_operation_failures_are_translated) ... ok
+test_close_is_idempotent_and_blocks_later_operations (test_mongo_repository.MongoAdapterTests.test_close_is_idempotent_and_blocks_later_operations) ... ok
+test_connect_failure_closes_partial_client_and_hides_secrets (test_mongo_repository.MongoAdapterTests.test_connect_failure_closes_partial_client_and_hides_secrets) ... ok
+test_connect_pings_and_sets_finite_timeouts_and_acknowledgement (test_mongo_repository.MongoAdapterTests.test_connect_pings_and_sets_finite_timeouts_and_acknowledgement) ... ok
+test_create_copies_input_and_returns_inserted_id (test_mongo_repository.MongoAdapterTests.test_create_copies_input_and_returns_inserted_id) ... ok
+test_cursor_failure_closes_cursor_and_raises_safe_error (test_mongo_repository.MongoAdapterTests.test_cursor_failure_closes_cursor_and_raises_safe_error) ... ok
+test_delete_uses_unique_id_and_one_operation (test_mongo_repository.MongoAdapterTests.test_delete_uses_unique_id_and_one_operation) ... ok
+test_malformed_uri_factory_error_becomes_configuration_error (test_mongo_repository.MongoAdapterTests.test_malformed_uri_factory_error_becomes_configuration_error) ... ok
+test_read_caps_results_and_closes_cursor (test_mongo_repository.MongoAdapterTests.test_read_caps_results_and_closes_cursor) ... ok
+test_unacknowledged_writes_are_not_reported_as_success (test_mongo_repository.MongoAdapterTests.test_unacknowledged_writes_are_not_reported_as_success) ... ok
+test_update_uses_id_set_and_preserves_matched_vs_modified (test_mongo_repository.MongoAdapterTests.test_update_uses_id_set_and_preserves_matched_vs_modified) ... ok
+test_context_manager_closes_repository_after_exception (test_service.ServiceTests.test_context_manager_closes_repository_after_exception) ... ok
+test_create_and_read_do_not_expose_mutable_stored_data (test_service.ServiceTests.test_create_and_read_do_not_expose_mutable_stored_data) ... ok
+test_empty_result_is_success (test_service.ServiceTests.test_empty_result_is_success) ... ok
+test_full_crud_workflow_preserves_other_records (test_service.ServiceTests.test_full_crud_workflow_preserves_other_records) ... ok
+test_invalid_limits_never_reach_repository (test_service.ServiceTests.test_invalid_limits_never_reach_repository) ... ok
+test_invalid_measurements_are_rejected (test_service.ServiceTests.test_invalid_measurements_are_rejected) ... ok
+test_limit_reports_truncation_without_hiding_it (test_service.ServiceTests.test_limit_reports_truncation_without_hiding_it) ... ok
+test_logs_contain_metadata_but_not_record_values (test_service.ServiceTests.test_logs_contain_metadata_but_not_record_values) ... ok
+test_measurement_boundaries_and_optional_empty_name (test_service.ServiceTests.test_measurement_boundaries_and_optional_empty_name) ... ok
+test_mutations_reject_broad_filters_and_invalid_ids (test_service.ServiceTests.test_mutations_reject_broad_filters_and_invalid_ids) ... ok
+test_operator_and_unknown_field_inputs_never_reach_repository (test_service.ServiceTests.test_operator_and_unknown_field_inputs_never_reach_repository) ... ok
+test_reject_missing_required_fields (test_service.ServiceTests.test_reject_missing_required_fields) ... ok
+test_reject_oversized_or_nul_text (test_service.ServiceTests.test_reject_oversized_or_nul_text) ... ok
+test_repository_failure_is_not_an_empty_result (test_service.ServiceTests.test_repository_failure_is_not_an_empty_result) ... ok
+test_unchanged_update_is_distinct_from_missing_record (test_service.ServiceTests.test_unchanged_update_is_distinct_from_missing_record) ... ok
+test_update_rejects_empty_changes_operators_and_id_mutation (test_service.ServiceTests.test_update_rejects_empty_changes_operators_and_id_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 45 tests in 0.040s
+
+OK

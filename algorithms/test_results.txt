@@ -1,0 +1,26 @@
+test_end_to_end_cadence_and_cleanup (test_thermostat.ApplicationTests.test_end_to_end_cadence_and_cleanup) ... ok
+test_queue_is_bounded_and_commands_validate (test_thermostat.ApplicationTests.test_queue_is_bounded_and_commands_validate) ... WARNING:root:Button queue full; command dropped
+ok
+test_sensor_failure_and_recovery (test_thermostat.ApplicationTests.test_sensor_failure_and_recovery) ... WARNING:root:Sensor unavailable or invalid; indicators disabled
+ok
+test_unexpected_output_failure_closes_device (test_thermostat.ApplicationTests.test_unexpected_output_failure_closes_device) ... ok
+test_cool_hysteresis_and_boundaries (test_thermostat.ControlTests.test_cool_hysteresis_and_boundaries) ... ok
+test_fault_clears_history_and_recovers (test_thermostat.ControlTests.test_fault_clears_history_and_recovers) ... ok
+test_heat_hysteresis_and_boundaries (test_thermostat.ControlTests.test_heat_hysteresis_and_boundaries) ... ok
+test_mode_cycle_and_off (test_thermostat.ControlTests.test_mode_cycle_and_off) ... ok
+test_serial_format (test_thermostat.ControlTests.test_serial_format) ... ok
+test_setpoint_validation_and_button_clamp (test_thermostat.ControlTests.test_setpoint_validation_and_button_clamp) ... ok
+test_invalid_inputs_do_not_mutate_filter (test_thermostat.FilterTests.test_invalid_inputs_do_not_mutate_filter) ... ok
+test_reference_agreement_long_stream (test_thermostat.FilterTests.test_reference_agreement_long_stream) ... ok
+test_warmup_and_eviction (test_thermostat.FilterTests.test_warmup_and_eviction) ... ok
+test_window_bounds (test_thermostat.FilterTests.test_window_bounds) ... ok
+test_early_sleep_return_does_not_run_early (test_thermostat.SchedulerTests.test_early_sleep_return_does_not_run_early) ... ok
+test_equal_deadlines_are_stable (test_thermostat.SchedulerTests.test_equal_deadlines_are_stable) ... ok
+test_interval_validation (test_thermostat.SchedulerTests.test_interval_validation) ... ok
+test_mixed_intervals_and_sleep (test_thermostat.SchedulerTests.test_mixed_intervals_and_sleep) ... ok
+test_overrun_skips_backlog_without_drift (test_thermostat.SchedulerTests.test_overrun_skips_backlog_without_drift) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.016s
+
+OK

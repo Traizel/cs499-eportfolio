@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Software Engineering and Design Original Source | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
+<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Software Engineering and Design Original Source</h1><p class="name">Tré Olson</p></div></header>
+<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
+<main id="main" class="container"><section class="card"><h2>Original files</h2><p><a href="index.html">Category overview</a></p><ul><li><a href="original/CRUD_Python.py">CRUD_Python.py</a></li></ul><details open><summary>CRUD_Python.py</summary><p><a href="original/CRUD_Python.py">Download this file</a></p><pre><code>&quot;&quot;&quot;MongoDB CRUD module for the CS 340 Module Four Milestone.
+
+This module provides the create and read operations for the Austin Animal
+Center (AAC) animals collection.
+&quot;&quot;&quot;
+
+from typing import Any, Dict, List
+from urllib.parse import quote_plus
+
+from pymongo import MongoClient
+from pymongo.errors import PyMongoError
+
+
+class AnimalShelter:
+    &quot;&quot;&quot;Provide reusable create and read operations for the AAC database.&quot;&quot;&quot;
+
+    def __init__(self, username: str, password: str) -&gt; None:
+        &quot;&quot;&quot;Connect to the local MongoDB server using the supplied credentials.&quot;&quot;&quot;
+        encoded_username = quote_plus(username)
+        encoded_password = quote_plus(password)
+
+        connection_string = (
+            f&quot;mongodb://{encoded_username}:{encoded_password}&quot;
+            &quot;@localhost:27017/?authSource=admin&quot;
+        )
+
+        self.client = MongoClient(connection_string, serverSelectionTimeoutMS=5000)
+        self.database = self.client[&quot;aac&quot;]
+        self.collection = self.database[&quot;animals&quot;]
+
+        # Force MongoDB to validate the connection and credentials immediately.
+        self.client.admin.command(&quot;ping&quot;)
+
+    def create(self, data: Dict[str, Any]) -&gt; bool:
+        &quot;&quot;&quot;Insert one document and return True when MongoDB acknowledges it.&quot;&quot;&quot;
+        if not isinstance(data, dict) or not data:
+            return False
+
+        try:
+            result = self.collection.insert_one(data)
+            return bool(result.acknowledged)
+        except PyMongoError as error:
+            print(f&quot;Create operation failed: {error}&quot;)
+            return False
+
+    def read(self, query: Dict[str, Any]) -&gt; List[Dict[str, Any]]:
+        &quot;&quot;&quot;Return all documents matching the query as a Python list.&quot;&quot;&quot;
+        if not isinstance(query, dict):
+            return []
+
+        try:
+            cursor = self.collection.find(query)
+            return list(cursor)
+        except PyMongoError as error:
+            print(f&quot;Read operation failed: {error}&quot;)
+            return []
+
+    def update(self, query: Dict[str, Any], new_values: Dict[str, Any]) -&gt; int:
+        &quot;&quot;&quot;Update matching documents and return the number of modified documents.&quot;&quot;&quot;
+        if (
+            not isinstance(query, dict)
+            or not query
+            or not isinstance(new_values, dict)
+            or not new_values
+        ):
+            return 0
+
+        try:
+            result = self.collection.update_many(query, {&quot;$set&quot;: new_values})
+            return int(result.modified_count)
+        except PyMongoError as error:
+            print(f&quot;Update operation failed: {error}&quot;)
+            return 0
+
+    def delete(self, query: Dict[str, Any]) -&gt; int:
+        &quot;&quot;&quot;Delete matching documents and return the number of deleted documents.&quot;&quot;&quot;
+        # Requiring a nonempty query prevents an accidental deletion of the collection.
+        if not isinstance(query, dict) or not query:
+            return 0
+
+        try:
+            result = self.collection.delete_many(query)
+            return int(result.deleted_count)
+        except PyMongoError as error:
+            print(f&quot;Delete operation failed: {error}&quot;)
+            return 0
+</code></pre></details></section></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>

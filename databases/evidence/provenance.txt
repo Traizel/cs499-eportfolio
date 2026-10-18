@@ -1,0 +1,4 @@
+Original CRUD module copied unchanged from CS499_Milestone_Two_Code.zip.
+Original SHA256: 77c33ea0b803ba36000a8bca46a4d8b5040a9f8d0e9d7287f18ce82da0ca9d19
+Enhanced architecture inherited from Milestone Two; database modules added for Milestone Four.
+Offline tests: 45 passed. Live MongoDB verification: passed on generated data.

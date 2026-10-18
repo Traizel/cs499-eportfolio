@@ -1,0 +1,217 @@
+[
+  {
+    "path": "software-engineering/original/CRUD_Python.py",
+    "sha256": "77c33ea0b803ba36000a8bca46a4d8b5040a9f8d0e9d7287f18ce82da0ca9d19",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/__init__.py",
+    "sha256": "179d38b520f6b03fbc5d1c3a69a33418acfa34412ea4889db3112f614d39bfc5",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/config.py",
+    "sha256": "5e5148d1f41638f8ae943379346e2728db8906eb43dffb7a808266cdeb920ead",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/errors.py",
+    "sha256": "7dead765f72a5a096fc6d90d3bba5032943f19c5ff9a1bfb31ba8272dc3ba4cf",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/memory_repository.py",
+    "sha256": "dcecd05a9d85efb5e2612384fdff2a71fc658000293e9a6c188d0b81f98ed764",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/models.py",
+    "sha256": "160c7bae023fac07c09cbe2874cb5215294229ff5f335b06d4c735cbd3f22414",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/mongo_repository.py",
+    "sha256": "ad4a04d880e0684554987dfe2635c6ad8d2137fccc7351308d4c2ab632f4cdee",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/repository.py",
+    "sha256": "d0243fc67b987b8ccca4fbd2209d2c94f7a0b3331e214e5268a11c8f8306a4ad",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/service.py",
+    "sha256": "67596a8b523dfe3feea991ac9384857e43682eb3032e855e133c2f4270976cd8",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/animal_shelter/validation.py",
+    "sha256": "52affd35d87cbb6806a418c657b59830db63f05b2af1c58f85b90cc8bf31a240",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/demo.py",
+    "sha256": "65a91e700e99ea3f5d4e8304a8073d920a9e6d0c04b52fab1463a85e933769ea",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/live_read.py",
+    "sha256": "d106c7e3089a81e02eb5acfb24df874ad88e47dbe9af073074b3e6ac74650aac",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/requirements.txt",
+    "sha256": "6f4a0b5f21895951ba1c235fb3bbfae0593ea05d30a1aa9570c7733fd4367ab8",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/tests/test_config.py",
+    "sha256": "96ea861e09a73b463c0b0ef84c8c86e2d0486a49ba5dc5135a0280356f44065a",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/tests/test_mongo_repository.py",
+    "sha256": "70d27529d728862e8dcae6319e212c376da42dc9490dc0a689f8077ccfdde0b1",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "software-engineering/enhanced/tests/test_service.py",
+    "sha256": "c4e94b506fc253b385661582d397e32ac25249b5d8ac174c5ee8b272f7baa0ad",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "algorithms/original/Thermostat.py",
+    "sha256": "0f9654c2ab686da955e2dd1a5752b6918c1042b136b6984038fdd525a78f4abc",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "algorithms/enhanced/Thermostat.py",
+    "sha256": "7b82f04f563ab809b8df909d6471b9524265a5d997f75e37e52570e25fecc813",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "algorithms/enhanced/core.py",
+    "sha256": "ea9d1462318c50b67634b73d88b93b4e7b423d898991ada285340f84d57e3f38",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "algorithms/enhanced/pi_adapter.py",
+    "sha256": "8cfd5beecb5963f6b542457e56501c2805ad5e309f3e259015e380d9fe593438",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/original/CRUD_Python_Module.py",
+    "sha256": "77c33ea0b803ba36000a8bca46a4d8b5040a9f8d0e9d7287f18ce82da0ca9d19",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/__init__.py",
+    "sha256": "179d38b520f6b03fbc5d1c3a69a33418acfa34412ea4889db3112f614d39bfc5",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/config.py",
+    "sha256": "5e5148d1f41638f8ae943379346e2728db8906eb43dffb7a808266cdeb920ead",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/database_repository.py",
+    "sha256": "f770428c8380e631e79750893d7649be28aeb969fee661fde203e434a2ff84ba",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/database_service.py",
+    "sha256": "01d9e8c9ae9a0eb7436c6ad95d3e9560a72f131322f6f09858ab2c80036b59bc",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/errors.py",
+    "sha256": "7dead765f72a5a096fc6d90d3bba5032943f19c5ff9a1bfb31ba8272dc3ba4cf",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/memory_repository.py",
+    "sha256": "dcecd05a9d85efb5e2612384fdff2a71fc658000293e9a6c188d0b81f98ed764",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/models.py",
+    "sha256": "160c7bae023fac07c09cbe2874cb5215294229ff5f335b06d4c735cbd3f22414",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/mongo_repository.py",
+    "sha256": "ad4a04d880e0684554987dfe2635c6ad8d2137fccc7351308d4c2ab632f4cdee",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/repository.py",
+    "sha256": "d0243fc67b987b8ccca4fbd2209d2c94f7a0b3331e214e5268a11c8f8306a4ad",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/search.py",
+    "sha256": "71f68eee81833e0da50d28cb1e95090e6717720614e01fd13faacabedecd1b1f",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/service.py",
+    "sha256": "67596a8b523dfe3feea991ac9384857e43682eb3032e855e133c2f4270976cd8",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/animal_shelter/validation.py",
+    "sha256": "52affd35d87cbb6806a418c657b59830db63f05b2af1c58f85b90cc8bf31a240",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/database_demo.py",
+    "sha256": "e6c8f3c118f6b537601aa4ffa3bd76fd488b8e5053cc4f626ae0c909549e22e0",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/demo.py",
+    "sha256": "65a91e700e99ea3f5d4e8304a8073d920a9e6d0c04b52fab1463a85e933769ea",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/live_read.py",
+    "sha256": "d106c7e3089a81e02eb5acfb24df874ad88e47dbe9af073074b3e6ac74650aac",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/live_verify.py",
+    "sha256": "cd65050b0db452280116c3c69c838cdb2276e4f38d722d4f448158d72e86d301",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/requirements.txt",
+    "sha256": "6f4a0b5f21895951ba1c235fb3bbfae0593ea05d30a1aa9570c7733fd4367ab8",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/setup_indexes.py",
+    "sha256": "ee669a612dddbcaa7fb122c45f120accab36e4ff73d21427d58d87f6118374b4",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/tests/test_config.py",
+    "sha256": "96ea861e09a73b463c0b0ef84c8c86e2d0486a49ba5dc5135a0280356f44065a",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/tests/test_database.py",
+    "sha256": "753379d60d56027471900d963720c812fca71948d21e5b6b2fe5037739af5863",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/tests/test_mongo_repository.py",
+    "sha256": "70d27529d728862e8dcae6319e212c376da42dc9490dc0a689f8077ccfdde0b1",
+    "matches_supplied_milestone": true
+  },
+  {
+    "path": "databases/enhanced/tests/test_service.py",
+    "sha256": "c4e94b506fc253b385661582d397e32ac25249b5d8ac174c5ee8b272f7baa0ad",
+    "matches_supplied_milestone": true
+  }
+]

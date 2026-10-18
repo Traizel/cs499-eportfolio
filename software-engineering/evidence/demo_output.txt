@@ -1,0 +1,8 @@
+Created synthetic record: True
+Read matching records: 1
+Changed name: UpdateResult(matched_count=1, modified_count=1)
+Repeated same update: UpdateResult(matched_count=1, modified_count=0)
+Rejected nested query operator: True
+Deleted record: DeleteResult(deleted_count=1)
+Read after deletion: 0
+Context manager closed the service.
