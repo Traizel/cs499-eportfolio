@@ -1,6 +1,78 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Algorithms and Data Structures | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
-<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Algorithms and Data Structures</h1><p class="name">Tré Olson</p></div></header>
-<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
-<main id="main" class="container"><section class="card"><h2>Thermostat scheduling and control</h2><p>A min-heap scheduler replaces coupled loop counters. A bounded moving average, hysteresis, and command queue provide explicit timing and control behavior, supported by 19 tests and a virtual simulation.</p><div class="link-grid"><a class="button" href="original.html">Read original code</a><a class="button" href="enhanced.html">Read enhanced code</a><a class="button" href="narrative.html">Read narrative</a><a class="button" href="Tre Olson CS 499 Milestone Three Narrative.docx">Word narrative</a><a class="button" href="README.md">Run instructions</a></div><h3>Verification evidence</h3><ul><li><a href="evidence/final-simulation.txt">final-simulation.txt</a></li><li><a href="evidence/final-test-results.txt">final-test-results.txt</a></li><li><a href="tests/test_thermostat.py">test_thermostat.py</a></li></ul><h3>Run and review guide</h3><p>The completed CS 350 baseline is original/Thermostat.py. The enhanced implementation is in enhanced/Thermostat.py, enhanced/core.py, and enhanced/pi_adapter.py. The baseline and enhanced source are preserved from the supplied milestone; no separate starter or Thermostat_Completed.py file is included.</p><h3>Run without hardware</h3><p>Use Python 3.10 or newer. From this category folder:</p><pre><code>python3 -m unittest discover -s tests -v
-python3 enhanced/Thermostat.py --simulate --seconds 65</code></pre><p>The offline suite uses the Python standard library and has 19 tests. The simulation runs on a virtual clock; 65 seconds of simulated time complete quickly. Expected scheduled callbacks: sensor 65, commands 650, display 65, lights 260, serial 2. The scheduled light count excludes immediate light updates triggered by sampling or commands.</p><h3>Algorithm choices</h3><p>The min heap gives O(1) access to the next deadline, O(log k) insertion/removal, and O(k) storage for k tasks. Monotonic deadlines skip missed periods instead of replaying a backlog. A fixed-size deque with a rolling sum gives O(1) average updates and O(w) storage for w samples. The five-sample default introduces smoothing delay. Hysteresis uses a 0.5 F margin on either side of the setpoint. The command queue holds at most 32 entries and each processing turn handles at most 32.</p><h3>Hardware boundary</h3><p>The hardware adapter retains the LCD, AHT sensor, GPIO buttons/LEDs, and serial connection for the original circuit. On the correctly configured CS 350 Raspberry Pi environment, the entry point is python3 enhanced/Thermostat.py --hardware --seconds 65. Hardware libraries and wiring must match enhanced/pi_adapter.py. Physical integration was not verified during final packaging, and simulation is not a hardware latency or HVAC safety test.</p><p>Current evidence is in evidence/final-test-results.txt and evidence/final-simulation.txt. Earlier test_results.txt and simulation_output.txt are retained as milestone records.</p></section></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence.">
+    <title>Algorithms and Data Structures | Tre Olson</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body><a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <div class="container">
+            <p class="eyebrow">CS 499 Computer Science Capstone</p>
+            <h1>Algorithms and Data Structures</h1>
+            <p class="name">Tré Olson</p>
+        </div>
+    </header>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a
+                href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software
+                Engineering</a><a href="../index.html#algorithms">Algorithms</a><a
+                href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div>
+    </nav>
+    <main id="main" class="container">
+        <section class="card">
+            <h2>Thermostat scheduling and control</h2>
+            <p>A min-heap scheduler replaces coupled loop counters. A bounded moving average, hysteresis, and command
+                queue provide explicit timing and control behavior, supported by 19 tests and a virtual simulation.</p>
+            <div class="link-grid"><a class="button" href="original.html">Read original code</a><a class="button"
+                    href="enhanced.html">Read enhanced code</a><a class="button" href="narrative.html">Read
+                    narrative</a><a class="button" href="Tre Olson CS 499 Milestone Three Narrative.docx">Word
+                    narrative</a><a class="button" href="README.md">Run instructions</a></div>
+            <h3>Verification evidence</h3>
+            <ul>
+                <li><a href="evidence/final-simulation.txt">final-simulation.txt</a></li>
+                <li><a href="evidence/final-test-results.txt">final-test-results.txt</a></li>
+                <li><a href="tests/test_thermostat.py">test_thermostat.py</a></li>
+            </ul>
+            <h3>Run and review guide</h3>
+            <p>The completed CS 350 baseline is original/Thermostat.py. The enhanced implementation is in
+                enhanced/Thermostat.py, enhanced/core.py, and enhanced/pi_adapter.py. The baseline and enhanced source
+                are preserved from the supplied milestone; no separate starter or Thermostat_Completed.py file is
+                included.</p>
+            <h3>Run without hardware</h3>
+            <p>Use Python 3.10 or newer. From this category folder:</p>
+            <pre><code>python3 -m unittest discover -s tests -v
+python3 enhanced/Thermostat.py --simulate --seconds 65</code></pre>
+            <p>The offline suite uses the Python standard library and has 19 tests. The simulation runs on a virtual
+                clock; 65 seconds of simulated time complete quickly. Expected scheduled callbacks: sensor 65, commands
+                650, display 65, lights 260, serial 2. The scheduled light count excludes immediate light updates
+                triggered by sampling or commands.</p>
+            <h3>Algorithm choices</h3>
+            <p>The min heap gives O(1) access to the next deadline, O(log k) insertion/removal, and O(k) storage for k
+                tasks. Monotonic deadlines skip missed periods instead of replaying a backlog. A fixed-size deque with a
+                rolling sum gives O(1) average updates and O(w) storage for w samples. The five-sample default
+                introduces smoothing delay. Hysteresis uses a 0.5 F margin on either side of the setpoint. The command
+                queue holds at most 32 entries and each processing turn handles at most 32.</p>
+            <h3>Hardware boundary</h3>
+            <p>The hardware adapter retains the LCD, AHT sensor, GPIO buttons/LEDs, and serial connection for the
+                original circuit. On the correctly configured CS 350 Raspberry Pi environment, the entry point is
+                python3 enhanced/Thermostat.py --hardware --seconds 65. Hardware libraries and wiring must match
+                enhanced/pi_adapter.py. Physical integration was not verified during final packaging, and simulation is
+                not a hardware latency or HVAC safety test.</p>
+            <p>Current evidence is in evidence/final-test-results.txt and evidence/final-simulation.txt. Earlier
+                test_results.txt and simulation_output.txt are retained as milestone records.</p>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>Tre Olson · CS 499 · October 2026</p>
+        </div>
+    </footer>
+</body>
+
+</html>

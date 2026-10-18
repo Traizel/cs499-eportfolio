@@ -1,8 +1,42 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Algorithms and Data Structures Enhanced Source | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
-<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Algorithms and Data Structures Enhanced Source</h1><p class="name">Tré Olson</p></div></header>
-<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
-<main id="main" class="container"><section class="card"><h2>Enhanced files</h2><p><a href="index.html">Category overview</a></p><ul><li><a href="enhanced/Thermostat.py">Thermostat.py</a></li><li><a href="enhanced/core.py">core.py</a></li><li><a href="enhanced/pi_adapter.py">pi_adapter.py</a></li></ul><details><summary>Thermostat.py</summary><p><a href="enhanced/Thermostat.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Run with --simulate (default) on a computer, or --hardware on the CS 350 Pi.&quot;&quot;&quot;
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence.">
+    <title>Algorithms and Data Structures Enhanced Source | Tre Olson</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body><a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <div class="container">
+            <p class="eyebrow">CS 499 Computer Science Capstone</p>
+            <h1>Algorithms and Data Structures Enhanced Source</h1>
+            <p class="name">Tré Olson</p>
+        </div>
+    </header>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a
+                href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software
+                Engineering</a><a href="../index.html#algorithms">Algorithms</a><a
+                href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div>
+    </nav>
+    <main id="main" class="container">
+        <section class="card">
+            <h2>Enhanced files</h2>
+            <p><a href="index.html">Category overview</a></p>
+            <ul>
+                <li><a href="enhanced/Thermostat.py">Thermostat.py</a></li>
+                <li><a href="enhanced/core.py">core.py</a></li>
+                <li><a href="enhanced/pi_adapter.py">pi_adapter.py</a></li>
+            </ul>
+            <details>
+                <summary>Thermostat.py</summary>
+                <p><a href="enhanced/Thermostat.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Run with --simulate (default) on a computer, or --hardware on the CS 350 Pi.&quot;&quot;&quot;
 import argparse
 from collections import Counter
 from datetime import datetime, timedelta
@@ -159,7 +193,12 @@ if __name__ == &quot;__main__&quot;:
         main()
     except KeyboardInterrupt:
         print(&quot;Stopped.&quot;)
-</code></pre></details><details><summary>core.py</summary><p><a href="enhanced/core.py">Download this file</a></p><pre><code>&quot;&quot;&quot;CS 499 enhancement of the CS 350 thermostat; no hardware dependencies.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>core.py</summary>
+                <p><a href="enhanced/core.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;CS 499 enhancement of the CS 350 thermostat; no hardware dependencies.&quot;&quot;&quot;
 from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum
@@ -320,7 +359,12 @@ class Scheduler:
             periods = max(1, math.floor((now - event.due) / event.interval) + 1)
             event.due += periods * event.interval
             heapq.heappush(self.events, event)
-</code></pre></details><details><summary>pi_adapter.py</summary><p><a href="enhanced/pi_adapter.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Hardware adapter retaining the wiring and LED semantics of the original.
+</code></pre>
+            </details>
+            <details>
+                <summary>pi_adapter.py</summary>
+                <p><a href="enhanced/pi_adapter.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Hardware adapter retaining the wiring and LED semantics of the original.
 
 Hardware imports occur only when explicitly running on a Raspberry Pi.
 Physical integration has not been tested in the development container.
@@ -397,4 +441,15 @@ class RaspberryPi:
     def close(self):
         # ExitStack is idempotent and also releases partially opened hardware.
         self.resources.close()
-</code></pre></details></section></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>
+</code></pre>
+            </details>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>Tre Olson · CS 499 · October 2026</p>
+        </div>
+    </footer>
+</body>
+
+</html>

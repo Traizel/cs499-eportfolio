@@ -1,10 +1,115 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Software Engineering and Design | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
-<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Software Engineering and Design</h1><p class="name">Tré Olson</p></div></header>
-<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
-<main id="main" class="container"><section class="card"><h2>AnimalShelter CRUD architecture</h2><p>A layered Python package separates configuration, validation, service logic, and database access. Dependency injection, typed results, controlled failures, and 31 offline tests make the behavior easier to maintain and review.</p><div class="link-grid"><a class="button" href="original.html">Read original code</a><a class="button" href="enhanced.html">Read enhanced code</a><a class="button" href="narrative.html">Read narrative</a><a class="button" href="Tre Olson CS 499 Milestone Two Narrative.docx">Word narrative</a><a class="button" href="README.md">Run instructions</a></div><h3>Verification evidence</h3><ul><li><a href="evidence/demo_output.txt">demo_output.txt</a></li><li><a href="evidence/final-test-results.txt">final-test-results.txt</a></li><li><a href="evidence/provenance.txt">provenance.txt</a></li><li><a href="evidence/test_results.txt">test_results.txt</a></li></ul><h3>Run and review guide</h3><p>The CS 340 AnimalShelter CRUD module is preserved in original/CRUD_Python.py. The enhanced package separates validation, configuration, service logic, repository access, results, and errors. Source files are unchanged from the supplied milestone.</p><h3>Run the offline checks</h3><p>Use Python 3.10 or newer; final checks used Python 3.12. From this category folder:</p><pre><code>python3 -m venv .venv
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence.">
+    <title>Software Engineering and Design | Tre Olson</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body><a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <div class="container">
+            <p class="eyebrow">CS 499 Computer Science Capstone</p>
+            <h1>Software Engineering and Design</h1>
+            <p class="name">Tré Olson</p>
+        </div>
+    </header>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a
+                href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software
+                Engineering</a><a href="../index.html#algorithms">Algorithms</a><a
+                href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div>
+    </nav>
+    <main id="main" class="container">
+        <section class="card">
+            <h2>AnimalShelter CRUD architecture</h2>
+            <p>A layered Python package separates configuration, validation, service logic, and database access.
+                Dependency injection, typed results, controlled failures, and 31 offline tests make the behavior easier
+                to maintain and review.</p>
+            <div class="link-grid"><a class="button" href="original.html">Read original code</a><a class="button"
+                    href="enhanced.html">Read enhanced code</a><a class="button" href="narrative.html">Read
+                    narrative</a><a class="button" href="Tre Olson CS 499 Milestone Two Narrative.docx">Word
+                    narrative</a><a class="button" href="README.md">Run instructions</a></div>
+            <h3>Verification evidence</h3>
+            <ul>
+                <li><a href="evidence/demo_output.txt">demo_output.txt</a></li>
+                <li><a href="evidence/final-test-results.txt">final-test-results.txt</a></li>
+                <li><a href="evidence/provenance.txt">provenance.txt</a></li>
+                <li><a href="evidence/test_results.txt">test_results.txt</a></li>
+            </ul>
+            <h3>Run and review guide</h3>
+            <p>The CS 340 AnimalShelter CRUD module is preserved in original/CRUD_Python.py. The enhanced package
+                separates validation, configuration, service logic, repository access, results, and errors. Source files
+                are unchanged from the supplied milestone.</p>
+            <h3>Run the offline checks</h3>
+            <p>Use Python 3.10 or newer; final checks used Python 3.12. From this category folder:</p>
+            <pre><code>python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r enhanced/requirements.txt
 cd enhanced
 python -m unittest discover -s tests -v
-python demo.py</code></pre><p>The suite has 31 tests. The demo uses an in-memory repository. Neither requires a running MongoDB server after installing the dependencies.</p><h3>Migration and design</h3><div class="table-wrap"><table><thead><tr><th scope="col">Original behavior</th><th scope="col">Enhanced behavior</th><th scope="col">Caller change</th></tr></thead><tbody><tr><td>Class creates its database connection</td><td>Service receives a repository</td><td>Construct the appropriate repository and inject it</td></tr><tr><td>Read returns a list or hides a failure</td><td>Controlled errors distinguish failure from no matches</td><td>Handle the documented exceptions</td></tr><tr><td>Updates and deletes can use broad filters</td><td>Mutations require a unique MongoDB record ID</td><td>Read/select the target ID before mutation</td></tr><tr><td>Basic operation return values</td><td>Typed result objects preserve matched and modified counts</td><td>Read the relevant result fields</td></tr><tr><td>Credentials supplied to the original constructor</td><td>Environment-based configuration</td><td>Set MONGODB_URI outside source control</td></tr></tbody></table></div><p>The service owns its repository and closes it on context exit. See enhanced/demo.py for the working interface and enhanced/animal_shelter/repository.py for the repository contract.</p><h3>Live reads and limitations</h3><p>For an existing authorized database, configure MONGODB_URI, MONGODB_DATABASE (default aac), and MONGODB_COLLECTION (default animals), then run python live_read.py from enhanced. Keep credentials out of source files and Git history. Application validation does not establish database permissions. The later databases category contains separate live verification on generated data.</p><p>The final offline log is evidence/final-test-results.txt. Milestone evidence is retained alongside it. The narrative and final review guide explain scope and tradeoffs.</p></section></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>
+python demo.py</code></pre>
+            <p>The suite has 31 tests. The demo uses an in-memory repository. Neither requires a running MongoDB server
+                after installing the dependencies.</p>
+            <h3>Migration and design</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Original behavior</th>
+                            <th scope="col">Enhanced behavior</th>
+                            <th scope="col">Caller change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Class creates its database connection</td>
+                            <td>Service receives a repository</td>
+                            <td>Construct the appropriate repository and inject it</td>
+                        </tr>
+                        <tr>
+                            <td>Read returns a list or hides a failure</td>
+                            <td>Controlled errors distinguish failure from no matches</td>
+                            <td>Handle the documented exceptions</td>
+                        </tr>
+                        <tr>
+                            <td>Updates and deletes can use broad filters</td>
+                            <td>Mutations require a unique MongoDB record ID</td>
+                            <td>Read/select the target ID before mutation</td>
+                        </tr>
+                        <tr>
+                            <td>Basic operation return values</td>
+                            <td>Typed result objects preserve matched and modified counts</td>
+                            <td>Read the relevant result fields</td>
+                        </tr>
+                        <tr>
+                            <td>Credentials supplied to the original constructor</td>
+                            <td>Environment-based configuration</td>
+                            <td>Set MONGODB_URI outside source control</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>The service owns its repository and closes it on context exit. See enhanced/demo.py for the working
+                interface and enhanced/animal_shelter/repository.py for the repository contract.</p>
+            <h3>Live reads and limitations</h3>
+            <p>For an existing authorized database, configure MONGODB_URI, MONGODB_DATABASE (default aac), and
+                MONGODB_COLLECTION (default animals), then run python live_read.py from enhanced. Keep credentials out
+                of source files and Git history. Application validation does not establish database permissions. The
+                later databases category contains separate live verification on generated data.</p>
+            <p>The final offline log is evidence/final-test-results.txt. Milestone evidence is retained alongside it.
+                The narrative and final review guide explain scope and tradeoffs.</p>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>Tre Olson · CS 499 · October 2026</p>
+        </div>
+    </footer>
+</body>
+
+</html>

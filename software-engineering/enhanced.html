@@ -1,8 +1,54 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Software Engineering and Design Enhanced Source | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
-<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Software Engineering and Design Enhanced Source</h1><p class="name">Tré Olson</p></div></header>
-<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
-<main id="main" class="container"><section class="card"><h2>Enhanced files</h2><p><a href="index.html">Category overview</a></p><ul><li><a href="enhanced/animal_shelter/__init__.py">animal_shelter/__init__.py</a></li><li><a href="enhanced/animal_shelter/config.py">animal_shelter/config.py</a></li><li><a href="enhanced/animal_shelter/errors.py">animal_shelter/errors.py</a></li><li><a href="enhanced/animal_shelter/memory_repository.py">animal_shelter/memory_repository.py</a></li><li><a href="enhanced/animal_shelter/models.py">animal_shelter/models.py</a></li><li><a href="enhanced/animal_shelter/mongo_repository.py">animal_shelter/mongo_repository.py</a></li><li><a href="enhanced/animal_shelter/repository.py">animal_shelter/repository.py</a></li><li><a href="enhanced/animal_shelter/service.py">animal_shelter/service.py</a></li><li><a href="enhanced/animal_shelter/validation.py">animal_shelter/validation.py</a></li><li><a href="enhanced/demo.py">demo.py</a></li><li><a href="enhanced/live_read.py">live_read.py</a></li><li><a href="enhanced/requirements.txt">requirements.txt</a></li><li><a href="enhanced/tests/test_config.py">tests/test_config.py</a></li><li><a href="enhanced/tests/test_mongo_repository.py">tests/test_mongo_repository.py</a></li><li><a href="enhanced/tests/test_service.py">tests/test_service.py</a></li></ul><details><summary>animal_shelter/__init__.py</summary><p><a href="enhanced/animal_shelter/__init__.py">Download this file</a></p><pre><code>&quot;&quot;&quot;CS 499 software design enhancement for the CS 340 animal shelter artifact.&quot;&quot;&quot;
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence.">
+    <title>Software Engineering and Design Enhanced Source | Tre Olson</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body><a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <div class="container">
+            <p class="eyebrow">CS 499 Computer Science Capstone</p>
+            <h1>Software Engineering and Design Enhanced Source</h1>
+            <p class="name">Tré Olson</p>
+        </div>
+    </header>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a
+                href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software
+                Engineering</a><a href="../index.html#algorithms">Algorithms</a><a
+                href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div>
+    </nav>
+    <main id="main" class="container">
+        <section class="card">
+            <h2>Enhanced files</h2>
+            <p><a href="index.html">Category overview</a></p>
+            <ul>
+                <li><a href="enhanced/animal_shelter/__init__.py">animal_shelter/__init__.py</a></li>
+                <li><a href="enhanced/animal_shelter/config.py">animal_shelter/config.py</a></li>
+                <li><a href="enhanced/animal_shelter/errors.py">animal_shelter/errors.py</a></li>
+                <li><a href="enhanced/animal_shelter/memory_repository.py">animal_shelter/memory_repository.py</a></li>
+                <li><a href="enhanced/animal_shelter/models.py">animal_shelter/models.py</a></li>
+                <li><a href="enhanced/animal_shelter/mongo_repository.py">animal_shelter/mongo_repository.py</a></li>
+                <li><a href="enhanced/animal_shelter/repository.py">animal_shelter/repository.py</a></li>
+                <li><a href="enhanced/animal_shelter/service.py">animal_shelter/service.py</a></li>
+                <li><a href="enhanced/animal_shelter/validation.py">animal_shelter/validation.py</a></li>
+                <li><a href="enhanced/demo.py">demo.py</a></li>
+                <li><a href="enhanced/live_read.py">live_read.py</a></li>
+                <li><a href="enhanced/requirements.txt">requirements.txt</a></li>
+                <li><a href="enhanced/tests/test_config.py">tests/test_config.py</a></li>
+                <li><a href="enhanced/tests/test_mongo_repository.py">tests/test_mongo_repository.py</a></li>
+                <li><a href="enhanced/tests/test_service.py">tests/test_service.py</a></li>
+            </ul>
+            <details>
+                <summary>animal_shelter/__init__.py</summary>
+                <p><a href="enhanced/animal_shelter/__init__.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;CS 499 software design enhancement for the CS 340 animal shelter artifact.&quot;&quot;&quot;
 from .service import AnimalService
 from .errors import ShelterError, ConfigurationError, ValidationError, RepositoryError, ResourceClosedError
 from .models import CreateResult, ReadResult, UpdateResult, DeleteResult
@@ -10,7 +56,12 @@ from .models import CreateResult, ReadResult, UpdateResult, DeleteResult
 __all__ = [&#x27;AnimalService&#x27;, &#x27;ShelterError&#x27;, &#x27;ConfigurationError&#x27;, &#x27;ValidationError&#x27;,
            &#x27;RepositoryError&#x27;, &#x27;ResourceClosedError&#x27;, &#x27;CreateResult&#x27;, &#x27;ReadResult&#x27;,
            &#x27;UpdateResult&#x27;, &#x27;DeleteResult&#x27;]
-</code></pre></details><details><summary>animal_shelter/config.py</summary><p><a href="enhanced/animal_shelter/config.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Environment configuration is isolated from domain and database operations.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/config.py</summary>
+                <p><a href="enhanced/animal_shelter/config.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Environment configuration is isolated from domain and database operations.&quot;&quot;&quot;
 import os
 import re
 from dataclasses import dataclass, field
@@ -42,7 +93,12 @@ class MongoConfig:
             raise ConfigurationError(&#x27;MONGODB_TIMEOUT_MS must be an integer.&#x27;) from None
         return cls(source.get(&#x27;MONGODB_URI&#x27;, &#x27;&#x27;), source.get(&#x27;MONGODB_DATABASE&#x27;, &#x27;aac&#x27;),
                    source.get(&#x27;MONGODB_COLLECTION&#x27;, &#x27;animals&#x27;), timeout)
-</code></pre></details><details><summary>animal_shelter/errors.py</summary><p><a href="enhanced/animal_shelter/errors.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Stable, application-facing errors; messages never include driver details.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/errors.py</summary>
+                <p><a href="enhanced/animal_shelter/errors.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Stable, application-facing errors; messages never include driver details.&quot;&quot;&quot;
 
 class ShelterError(Exception):
     &quot;&quot;&quot;Base exception callers may handle at the application boundary.&quot;&quot;&quot;
@@ -58,7 +114,12 @@ class RepositoryError(ShelterError):
 
 class ResourceClosedError(ShelterError):
     &quot;&quot;&quot;An operation was attempted after the service or repository closed.&quot;&quot;&quot;
-</code></pre></details><details><summary>animal_shelter/memory_repository.py</summary><p><a href="enhanced/animal_shelter/memory_repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Offline demo/test adapter. Not persistent and not a MongoDB emulator.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/memory_repository.py</summary>
+                <p><a href="enhanced/animal_shelter/memory_repository.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Offline demo/test adapter. Not persistent and not a MongoDB emulator.&quot;&quot;&quot;
 from copy import deepcopy
 from bson import ObjectId
 from .errors import ResourceClosedError
@@ -104,7 +165,12 @@ class MemoryAnimalRepository:
 
     def close(self) -&gt; None:
         self._closed = True
-</code></pre></details><details><summary>animal_shelter/models.py</summary><p><a href="enhanced/animal_shelter/models.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Explicit results preserve the difference between success, no match and failure.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/models.py</summary>
+                <p><a href="enhanced/animal_shelter/models.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Explicit results preserve the difference between success, no match and failure.&quot;&quot;&quot;
 from dataclasses import dataclass
 from typing import Any
 
@@ -127,7 +193,12 @@ class UpdateResult:
 @dataclass(frozen=True)
 class DeleteResult:
     deleted_count: int
-</code></pre></details><details><summary>animal_shelter/mongo_repository.py</summary><p><a href="enhanced/animal_shelter/mongo_repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;PyMongo adapter: driver errors stop here rather than becoming empty results.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/mongo_repository.py</summary>
+                <p><a href="enhanced/animal_shelter/mongo_repository.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;PyMongo adapter: driver errors stop here rather than becoming empty results.&quot;&quot;&quot;
 import logging
 from typing import Any, Callable, TypeVar
 from bson import ObjectId
@@ -212,7 +283,12 @@ class MongoAnimalRepository:
         if not self._closed:
             self._client.close()
             self._closed = True
-</code></pre></details><details><summary>animal_shelter/repository.py</summary><p><a href="enhanced/animal_shelter/repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Repository contract; the service depends on this interface, not MongoClient.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/repository.py</summary>
+                <p><a href="enhanced/animal_shelter/repository.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Repository contract; the service depends on this interface, not MongoClient.&quot;&quot;&quot;
 from typing import Protocol
 from bson import ObjectId
 from .models import Document, CreateResult, ReadResult, UpdateResult, DeleteResult
@@ -224,7 +300,12 @@ class AnimalRepository(Protocol):
     def update(self, record_id: ObjectId, changes: Document) -&gt; UpdateResult: ...
     def delete(self, record_id: ObjectId) -&gt; DeleteResult: ...
     def close(self) -&gt; None: ...
-</code></pre></details><details><summary>animal_shelter/service.py</summary><p><a href="enhanced/animal_shelter/service.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Application API with validation, typed results and explicit resource ownership.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/service.py</summary>
+                <p><a href="enhanced/animal_shelter/service.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Application API with validation, typed results and explicit resource ownership.&quot;&quot;&quot;
 import logging
 from types import TracebackType
 from typing import Type
@@ -289,7 +370,12 @@ class AnimalService:
     def __exit__(self, exc_type: Type[BaseException] | None, exc: BaseException | None,
                  traceback: TracebackType | None) -&gt; None:
         self.close()
-</code></pre></details><details><summary>animal_shelter/validation.py</summary><p><a href="enhanced/animal_shelter/validation.py">Download this file</a></p><pre><code>&quot;&quot;&quot;A deliberately narrow, equality-only AAC service boundary.
+</code></pre>
+            </details>
+            <details>
+                <summary>animal_shelter/validation.py</summary>
+                <p><a href="enhanced/animal_shelter/validation.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;A deliberately narrow, equality-only AAC service boundary.
 
 Supported fields can be extended here with explicit types. Raw MongoDB operators,
 arrays and nested documents are never accepted through the public service API.
@@ -358,7 +444,12 @@ def result_limit(value: object) -&gt; int:
     if type(value) is not int or not 1 &lt;= value &lt;= MAX_RESULTS:
         raise ValidationError(&#x27;Read limit must be an integer from 1 to 1000.&#x27;)
     return value
-</code></pre></details><details><summary>demo.py</summary><p><a href="enhanced/demo.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Run a deterministic offline workflow with synthetic animal records.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>demo.py</summary>
+                <p><a href="enhanced/demo.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Run a deterministic offline workflow with synthetic animal records.&quot;&quot;&quot;
 from animal_shelter import AnimalService, ValidationError
 from animal_shelter.memory_repository import MemoryAnimalRepository
 
@@ -380,7 +471,12 @@ def main() -&gt; None:
 
 if __name__ == &#x27;__main__&#x27;:
     main()
-</code></pre></details><details><summary>live_read.py</summary><p><a href="enhanced/live_read.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Optional read-only smoke check against the user&#x27;s configured MongoDB.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>live_read.py</summary>
+                <p><a href="enhanced/live_read.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Optional read-only smoke check against the user&#x27;s configured MongoDB.&quot;&quot;&quot;
 from animal_shelter import AnimalService, ShelterError
 from animal_shelter.config import MongoConfig
 from animal_shelter.mongo_repository import MongoAnimalRepository
@@ -398,9 +494,19 @@ def main() -&gt; int:
 
 if __name__ == &#x27;__main__&#x27;:
     raise SystemExit(main())
-</code></pre></details><details><summary>requirements.txt</summary><p><a href="enhanced/requirements.txt">Download this file</a></p><pre><code>pymongo==4.18.1
+</code></pre>
+            </details>
+            <details>
+                <summary>requirements.txt</summary>
+                <p><a href="enhanced/requirements.txt">Download this file</a></p>
+                <pre><code>pymongo==4.18.1
 dnspython==2.8.0
-</code></pre></details><details><summary>tests/test_config.py</summary><p><a href="enhanced/tests/test_config.py">Download this file</a></p><pre><code>import unittest
+</code></pre>
+            </details>
+            <details>
+                <summary>tests/test_config.py</summary>
+                <p><a href="enhanced/tests/test_config.py">Download this file</a></p>
+                <pre><code>import unittest
 from animal_shelter.config import MongoConfig
 from animal_shelter.errors import ConfigurationError
 
@@ -427,7 +533,12 @@ class ConfigurationTests(unittest.TestCase):
         for kwargs in ({&#x27;database&#x27;: &#x27;bad.name&#x27;}, {&#x27;collection&#x27;: &#x27;$bad&#x27;}, {&#x27;timeout_ms&#x27;: True}, {&#x27;timeout_ms&#x27;: 60001}):
             with self.subTest(kwargs=kwargs), self.assertRaises(ConfigurationError):
                 MongoConfig(&#x27;mongodb://localhost/&#x27;, **kwargs)
-</code></pre></details><details><summary>tests/test_mongo_repository.py</summary><p><a href="enhanced/tests/test_mongo_repository.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Adapter contract tests use real PyMongo result/error types with mocked I/O.
+</code></pre>
+            </details>
+            <details>
+                <summary>tests/test_mongo_repository.py</summary>
+                <p><a href="enhanced/tests/test_mongo_repository.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Adapter contract tests use real PyMongo result/error types with mocked I/O.
 
 These tests do not claim to validate a live MongoDB server or credentials.
 &quot;&quot;&quot;
@@ -553,7 +664,12 @@ class MongoAdapterTests(unittest.TestCase):
         self.client.close.assert_called_once()
         with self.assertRaises(ResourceClosedError):
             self.repo.read({}, 1)
-</code></pre></details><details><summary>tests/test_service.py</summary><p><a href="enhanced/tests/test_service.py">Download this file</a></p><pre><code>&quot;&quot;&quot;Behavior tests exercise real validation with an injected offline repository.&quot;&quot;&quot;
+</code></pre>
+            </details>
+            <details>
+                <summary>tests/test_service.py</summary>
+                <p><a href="enhanced/tests/test_service.py">Download this file</a></p>
+                <pre><code>&quot;&quot;&quot;Behavior tests exercise real validation with an injected offline repository.&quot;&quot;&quot;
 import unittest
 from unittest.mock import Mock
 from bson import ObjectId
@@ -676,4 +792,15 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(record.operation, &#x27;create&#x27;)
         self.assertEqual(record.status, &#x27;success&#x27;)
         self.assertNotIn(&#x27;PRIVATE_SENTINEL&#x27;, str(record.__dict__))
-</code></pre></details></section></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>
+</code></pre>
+            </details>
+        </section>
+    </main>
+    <footer>
+        <div class="container">
+            <p>Tre Olson · CS 499 · October 2026</p>
+        </div>
+    </footer>
+</body>
+
+</html>

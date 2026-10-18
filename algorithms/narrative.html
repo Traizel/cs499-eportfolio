@@ -1,5 +1,110 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence."><title>Algorithms and Data Structures Narrative | Tre Olson</title><link rel="stylesheet" href="../style.css"></head>
-<body><a href="#main" class="skip-link">Skip to content</a><header class="site-header"><div class="container"><p class="eyebrow">CS 499 Computer Science Capstone</p><h1>Algorithms and Data Structures Narrative</h1><p class="name">Tré Olson</p></div></header>
-<nav class="site-nav" aria-label="Primary navigation"><div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software Engineering</a><a href="../index.html#algorithms">Algorithms</a><a href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div></nav>
-<main id="main" class="container"><article class="card prose"><a class="button" href="Tre Olson CS 499 Milestone Three Narrative.docx">Download Word narrative</a><p>Tre Olson<br>CS 499 Milestone Three<br>September 27, 2026</p><h2>Artifact Description</h2><p>I selected the Python thermostat artifact from CS 350, Emerging Systems Architectures and Technologies, for my algorithms and data structures enhancement. The artifact was developed during CS 350 before this capstone and was included in my September 2026 code review. It reads temperature from a Raspberry Pi sensor, supports off, heat, and cool modes, accepts button input, displays information on an LCD, controls indicator LEDs, and sends serial status messages. This capstone enhancement was completed on September 27, 2026.</p><p>The submission preserves the completed baseline as original/Thermostat.py. The enhanced implementation replaces display loop counters with independently scheduled tasks and adds temperature smoothing and hysteresis. These changes follow the Category Two enhancement described in my Module One plan. The final portfolio includes the baseline and enhanced files, tests, simulation output, and a README describing how to run them.</p><h2>Reason for Inclusion and Improvements</h2><p>This artifact belongs in my ePortfolio because it connects algorithmic decisions to observable application behavior. In the completed baseline, a display thread increments counters, updates lights through the display cycle, sends serial data after a number of iterations, and sleeps for one second. The duration of the work adds to that sleep, so iteration counts do not provide independent timing for each responsibility.</p><p>The enhanced scheduler stores recurring tasks in a min heap ordered by monotonic execution deadlines. It processes the earliest task and reschedules it from its previous deadline, skipping missed periods rather than replaying a backlog. A registration sequence resolves equal deadlines without comparing callback functions. For k scheduled tasks, looking at the earliest deadline is O(1), removing and reinserting a task is O(log k), and storage is O(k). This is more extensible than coupling new tasks to display counters. However, the original fixed set of counters already required constant work per iteration. I do not claim that the heap makes this small program faster or reduces CPU usage without hardware measurements.</p><p>A fixed size deque stores the latest five valid temperature readings. A rolling sum subtracts an evicted reading and adds the new one, providing an O(1) update and average calculation with O(w) storage for a window of w samples. Recalculating the sum each time would require O(w) work. Averaging smooths brief fluctuations, although it also delays response to sudden changes. Hysteresis adds a 0.5 degree Fahrenheit margin on each side of the setpoint. Heating and cooling retain their previous activation state inside that band, reducing repeated indicator changes near the target.</p><p>The application retains the original LCD, button, LED, and serial responsibilities through a separate Raspberry Pi adapter. The serial message still contains mode, temperature, and setpoint, but temperature now represents the average. A simulation makes the core behavior runnable without hardware. Button callbacks enter a bounded command queue, and the scheduler processes that queue every 0.1 second so model updates have one owner.</p><h2>Course Outcomes and Coverage</h2><p>The implementation provides evidence toward the three outcomes identified in my Module One plan. For Outcome 3, it demonstrates data structure selection, scheduling logic, complexity analysis, and evaluation of tradeoffs. For Outcome 4, it combines the algorithms with an executable application, simulation, and automated tests. For Outcome 5, it validates temperatures and setpoints, rejects nonfinite values, bounds stored samples and queued commands, and handles sensor failures without continuing to use stale readings.</p><p>On a sensor fault, the model clears its history, disables the indicators, displays an error, and suppresses serial readings until valid data returns. Setpoints are restricted to 50–90 degrees Fahrenheit, and button adjustments stop at those boundaries. Unexpected output errors trigger application cleanup. These controls address invalid data and resource management; they do not establish production HVAC safety or comprehensive security.</p><p>No change to the planned primary outcome coverage is needed. The README and narrative also support Outcome 2 through technical communication. The enhancement demonstrates substantial progress toward the planned outcomes, while physical integration remains a separate validation step.</p><h2>Reflection and Validation</h2><p>This enhancement illustrates why an algorithm must be evaluated in its application context. The heap makes deadlines explicit, but a cooperative scheduler can still be delayed by a slow hardware call. Skipping missed periods prevents a burst of outdated work, at the cost of not executing every missed occurrence. The command queue is another compromise: it avoids concurrent changes to the model, but its scheduled processing introduces a small input delay.</p><p>Important implementation challenges included subtracting the oldest reading before deque eviction, preserving activation inside the hysteresis band, and handling equal task deadlines deterministically. Separating the hardware adapter from the core made these behaviors testable using a virtual clock. The automated suite passed all 19 tests, including deadline ordering, mixed intervals, callback overruns, averaging against a reference across 10,000 samples, threshold boundaries, input limits, sensor recovery, and cleanup after an output failure.</p><p>The final verification on October 18, 2026 passed all 19 tests. The 65 second virtual simulation produced 65 sensor callbacks, 65 display callbacks, 260 scheduled light callbacks, 650 command callbacks, and two serial callbacks. These are actual simulation results, not measurements from a Raspberry Pi. Physical LCD, GPIO, sensor, and UART operation still require testing on the original circuit. My next validation step is to check those devices together and measure responsiveness before making any hardware performance claims.</p></article></main><footer><div class="container"><p>Tre Olson · CS 499 · October 2026</p></div></footer></body></html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+        content="Tre Olson CS 499 capstone portfolio with source code, reflections, and verification evidence.">
+    <title>Algorithms and Data Structures Narrative | Tre Olson</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body><a href="#main" class="skip-link">Skip to content</a>
+    <header class="site-header">
+        <div class="container">
+            <p class="eyebrow">CS 499 Computer Science Capstone</p>
+            <h1>Algorithms and Data Structures Narrative</h1>
+            <p class="name">Tré Olson</p>
+        </div>
+    </header>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <div class="container nav-links"><a href="../index.html#self-assessment">Self-Assessment</a><a
+                href="../index.html#code-review">Code Review</a><a href="../index.html#software-engineering">Software
+                Engineering</a><a href="../index.html#algorithms">Algorithms</a><a
+                href="../index.html#databases">Databases</a><a href="../outcomes.html">Outcome Map</a></div>
+    </nav>
+    <main id="main" class="container">
+        <article class="card prose"><a class="button" href="Tre Olson CS 499 Milestone Three Narrative.docx">Download
+                Word narrative</a>
+            <p>Tre Olson<br>CS 499 Milestone Three<br>September 27, 2026</p>
+            <h2>Artifact Description</h2>
+            <p>I selected the Python thermostat artifact from CS 350, Emerging Systems Architectures and Technologies,
+                for my algorithms and data structures enhancement. The artifact was developed during CS 350 before this
+                capstone and was included in my September 2026 code review. It reads temperature from a Raspberry Pi
+                sensor, supports off, heat, and cool modes, accepts button input, displays information on an LCD,
+                controls indicator LEDs, and sends serial status messages. This capstone enhancement was completed on
+                September 27, 2026.</p>
+            <p>The submission preserves the completed baseline as original/Thermostat.py. The enhanced implementation
+                replaces display loop counters with independently scheduled tasks and adds temperature smoothing and
+                hysteresis. These changes follow the Category Two enhancement described in my Module One plan. The final
+                portfolio includes the baseline and enhanced files, tests, simulation output, and a README describing
+                how to run them.</p>
+            <h2>Reason for Inclusion and Improvements</h2>
+            <p>This artifact belongs in my ePortfolio because it connects algorithmic decisions to observable
+                application behavior. In the completed baseline, a display thread increments counters, updates lights
+                through the display cycle, sends serial data after a number of iterations, and sleeps for one second.
+                The duration of the work adds to that sleep, so iteration counts do not provide independent timing for
+                each responsibility.</p>
+            <p>The enhanced scheduler stores recurring tasks in a min heap ordered by monotonic execution deadlines. It
+                processes the earliest task and reschedules it from its previous deadline, skipping missed periods
+                rather than replaying a backlog. A registration sequence resolves equal deadlines without comparing
+                callback functions. For k scheduled tasks, looking at the earliest deadline is O(1), removing and
+                reinserting a task is O(log k), and storage is O(k). This is more extensible than coupling new tasks to
+                display counters. However, the original fixed set of counters already required constant work per
+                iteration. I do not claim that the heap makes this small program faster or reduces CPU usage without
+                hardware measurements.</p>
+            <p>A fixed size deque stores the latest five valid temperature readings. A rolling sum subtracts an evicted
+                reading and adds the new one, providing an O(1) update and average calculation with O(w) storage for a
+                window of w samples. Recalculating the sum each time would require O(w) work. Averaging smooths brief
+                fluctuations, although it also delays response to sudden changes. Hysteresis adds a 0.5 degree
+                Fahrenheit margin on each side of the setpoint. Heating and cooling retain their previous activation
+                state inside that band, reducing repeated indicator changes near the target.</p>
+            <p>The application retains the original LCD, button, LED, and serial responsibilities through a separate
+                Raspberry Pi adapter. The serial message still contains mode, temperature, and setpoint, but temperature
+                now represents the average. A simulation makes the core behavior runnable without hardware. Button
+                callbacks enter a bounded command queue, and the scheduler processes that queue every 0.1 second so
+                model updates have one owner.</p>
+            <h2>Course Outcomes and Coverage</h2>
+            <p>The implementation provides evidence toward the three outcomes identified in my Module One plan. For
+                Outcome 3, it demonstrates data structure selection, scheduling logic, complexity analysis, and
+                evaluation of tradeoffs. For Outcome 4, it combines the algorithms with an executable application,
+                simulation, and automated tests. For Outcome 5, it validates temperatures and setpoints, rejects
+                nonfinite values, bounds stored samples and queued commands, and handles sensor failures without
+                continuing to use stale readings.</p>
+            <p>On a sensor fault, the model clears its history, disables the indicators, displays an error, and
+                suppresses serial readings until valid data returns. Setpoints are restricted to 50–90 degrees
+                Fahrenheit, and button adjustments stop at those boundaries. Unexpected output errors trigger
+                application cleanup. These controls address invalid data and resource management; they do not establish
+                production HVAC safety or comprehensive security.</p>
+            <p>No change to the planned primary outcome coverage is needed. The README and narrative also support
+                Outcome 2 through technical communication. The enhancement demonstrates substantial progress toward the
+                planned outcomes, while physical integration remains a separate validation step.</p>
+            <h2>Reflection and Validation</h2>
+            <p>This enhancement illustrates why an algorithm must be evaluated in its application context. The heap
+                makes deadlines explicit, but a cooperative scheduler can still be delayed by a slow hardware call.
+                Skipping missed periods prevents a burst of outdated work, at the cost of not executing every missed
+                occurrence. The command queue is another compromise: it avoids concurrent changes to the model, but its
+                scheduled processing introduces a small input delay.</p>
+            <p>Important implementation challenges included subtracting the oldest reading before deque eviction,
+                preserving activation inside the hysteresis band, and handling equal task deadlines deterministically.
+                Separating the hardware adapter from the core made these behaviors testable using a virtual clock. The
+                automated suite passed all 19 tests, including deadline ordering, mixed intervals, callback overruns,
+                averaging against a reference across 10,000 samples, threshold boundaries, input limits, sensor
+                recovery, and cleanup after an output failure.</p>
+            <p>The final verification on October 18, 2026 passed all 19 tests. The 65 second virtual simulation produced
+                65 sensor callbacks, 65 display callbacks, 260 scheduled light callbacks, 650 command callbacks, and two
+                serial callbacks. These are actual simulation results, not measurements from a Raspberry Pi. Physical
+                LCD, GPIO, sensor, and UART operation still require testing on the original circuit. My next validation
+                step is to check those devices together and measure responsiveness before making any hardware
+                performance claims.</p>
+        </article>
+    </main>
+    <footer>
+        <div class="container">
+            <p>Tre Olson · CS 499 · October 2026</p>
+        </div>
+    </footer>
+</body>
+
+</html>
